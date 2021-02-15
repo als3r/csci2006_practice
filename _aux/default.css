@@ -209,3 +209,30 @@ nav.user a:hover {
     border-style: outset;
     border-radius: 10px;
 }
+
+.userForm {
+  width: 400px;
+}
+
+.userForm-header {
+  margin-bottom: 10px;
+}
+
+.userForm .form-label {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.userForm .form-input {
+  padding: 3px 6px;
+  margin-bottom: 10px;
+  width: 100%;
+  display: inline-block;
+}
+
+.form-submit {
+  padding: 3px 6px;
+  cursor: pointer;
+}
