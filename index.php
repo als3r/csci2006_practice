@@ -45,7 +45,7 @@ switch ($_GET['page']) {
     $new_artist->create();
 
     // end tests, reload artwork 1
-    $artists[1] = new Artwork(1);
+    $artists[1] = new Artist(1);
 
     // if id param is provided use it, otherwise use random of 1-3
     $id = empty($_GET['id']) || (int) $_GET['id'] == 0 ? rand(1,3) : (int) $_GET['id'];
