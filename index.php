@@ -23,8 +23,9 @@ switch ($_GET['page']) {
 
     // "test" update/delete/create and save functions
     // "results" will be in the log
-    $artists[1]->setTitle("Test Title");
-    $artists[1]->setHeight(300);
+    $artists[1]->setFirstName("Test First Name 123");
+    $artists[1]->setYearBirth(1100);
+    $artists[1]->setYearDeath(1200);
     $artists[1]->save();
 
     $artists[1]->deleteOneById(1);
