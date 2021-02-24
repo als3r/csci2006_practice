@@ -209,7 +209,7 @@ class Artist extends Model
         // mocking creating a record in db, $created_id - "returned" id from db
         $created_id = rand(100,200);
         $values['id'] = $created_id;
-        $this->log("Object Create(type: Artist, id: " . (int) $values['id'] . "): " . printArray($values) . PHP_EOL);
+        $this->log("Object Create(type: Artist, id: " . (int) $values['id'] . "): " . $this->printArray($values) . PHP_EOL);
     }
 
 
