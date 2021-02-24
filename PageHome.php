@@ -20,19 +20,101 @@ class PageHome extends Page
      */
     public const NAME = 'Home';
 
+
     /**
-     * Get Main section
+     * Get <head> tag
+     *
+     * @return string
+     */
+    public function getHead()
+    {
+        $output = '
+          <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <title>' . $this->getTitle() . '</title>
+              <link rel="stylesheet" href="_aux/default.css">
+              <!-- Fonts -->              
+              <link href="http://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css">
+              <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+              <link rel="stylesheet" href="css/homepage.css">
+          </head>';
+        return $output;
+    }
+
+    /**
+     * Get contents of the body tag
+     */
+    public function getBody()
+    {
+        $output = '<body>';
+        $output .= $this->getHeader();
+        $output .= $this->getMain();
+        $output .= $this->getFooter();
+        $output .= '</body>';
+        return $output;
+    }
+
+    /**
+     * Get contents of the main block
      *
      * @return string
      */
     public function getMain()
     {
-        $output = '';
-        $output .= '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sodales molestie erat a convallis. Cras id blandit purus. Aliquam eu nisl non ante sagittis tristique. Suspendisse gravida sapien quis risus tincidunt mollis. Quisque eget luctus justo, at facilisis ex. Donec pellentesque, dui sit amet finibus vestibulum, purus purus luctus ipsum, ac pellentesque sapien ante sed velit. Nulla nec enim eu ex malesuada condimentum a sit amet metus. Praesent volutpat diam non posuere maximus. Duis tempor luctus consectetur. Etiam tempus volutpat sollicitudin. Morbi finibus tortor ut sollicitudin imperdiet. Sed vitae diam id leo tristique dictum eu eget dui.</p>';
-        $output .= '<p>Etiam convallis gravida risus, sit amet feugiat orci semper quis. Suspendisse elementum, nibh sit amet blandit porta, mauris dui mollis diam, non porttitor dolor tortor et nunc. Sed sit amet venenatis eros, ac vulputate est. Vivamus ullamcorper arcu nec ipsum ultricies tincidunt. Donec viverra enim a posuere porta. Morbi at mattis elit. Nam aliquet pulvinar faucibus. Maecenas nec lorem eget magna hendrerit dapibus. Pellentesque congue neque et ipsum imperdiet hendrerit. Aliquam ullamcorper aliquam elit a laoreet. Suspendisse sed dolor lectus. Donec enim sapien, faucibus eget enim vitae, cursus eleifend eros. Curabitur eu tempus odio. Aliquam nunc magna, faucibus a ex quis, semper varius arcu. Suspendisse nec velit nibh.</p>';
-        $output .= '<p>Mauris sed iaculis turpis. Nunc sit amet ex et tellus pretium luctus vel vitae ante. Nullam in consequat erat, nec luctus lacus. Nulla porta egestas vehicula. Suspendisse sed rutrum ligula. Cras dictum sagittis neque, vitae ultrices dolor luctus vitae. Curabitur lobortis vehicula enim, at euismod ligula dapibus at. Nam eu leo vel leo feugiat imperdiet elementum id enim. Pellentesque at risus nec tortor tincidunt venenatis.</p>';
-        $output .= '<p>Nullam dapibus dictum magna, id vulputate nulla suscipit vitae. Integer sem dolor, condimentum a pellentesque auctor, pharetra at orci. Pellentesque risus leo, sagittis sit amet pretium id, tincidunt faucibus massa. Nam nisi neque, molestie eget elit non, vehicula porttitor justo. Ut ut quam vel velit fermentum hendrerit. Nulla facilisi. Nulla non efficitur leo, in eleifend risus. Aenean tincidunt, dolor a laoreet hendrerit, libero erat pellentesque quam, sed cursus libero lectus eget neque.</p>';
-        $output .= '<p>Ut consectetur orci quis enim pulvinar blandit. Curabitur aliquam, mauris ac ornare rutrum, lectus lacus egestas orci, quis lobortis eros diam non diam. Vivamus lacinia felis a nibh fringilla semper. In nec dictum mauris. Suspendisse ornare dignissim velit, vel lacinia dui efficitur non. Nunc tempus tellus id libero porta placerat. Nulla sed volutpat dolor, eget tempor nulla. Vestibulum sed accumsan sem. Curabitur venenatis laoreet nibh in convallis. Fusce erat dolor, aliquet eu sagittis eleifend, hendrerit quis ante. Pellentesque ut nulla viverra, ornare urna vel, rutrum sem. Ut luctus tristique aliquet. Vivamus non tempor orci. Aenean faucibus lorem enim, vel dignissim nulla consequat eu. Suspendisse eu urna nisi. Proin id sem a nibh pellentesque faucibus id nec quam.</p>';
+        // First version of the homepage based on one of the assignments from CS2005 course
+        $output = '
+                    <header class="homepage-banner">
+                        <img src="images/veermeer-view-of-house--background.jpg" class="banner" alt="Background Picture of Veermeer\'s \'View of House\'" title="Background Picture of Veermeer\'s \'View of House\'">
+                        <div class="banner--title">
+                            <h1>Dutch Portraits of the Golden Age</h1>
+                            <h2>From the Rijks Museum</h2>
+                            <span><a href="#start">Start</a></span>
+                        </div>
+                
+                    </header>
+                
+                    <article>
+                        <a name="start"></a>
+                        <div class="highlights">
+                            <h2>Latest Additions</h2>
+                            <div class="highlights--container">
+                                <div class="highlights--media">
+                                    <img src="images/mosaic-f.jpg" alt="...">
+                                </div>
+                                <div class="highlights--text">
+                                    <h4>Portrait of Maritge Claesdr Vooght</h4>
+                                    <p><em>Frans Hals, 1639</em></p>
+                                    <p>Maritge Vooght is here portrayed in a traditional pose, proudly sitting upright and looking straight out at the viewer</p>
+                                    <a href="#" class="highlights--button">Read More</a>
+                                </div>
+                            </div>
+                            <div class="highlights--container">
+                                <div class="highlights--media">
+                                    <img src="images/mosaic-g.jpg" alt="...">
+                                </div>
+                                <div class="highlights--text">
+                                    <h4>Portrait of Johannes Wtenbogaert</h4>
+                                    <p><em>Rembrandt, 1633</em></p>
+                                    <p>Wtenbogaert’s face is more realistically modelled than his hands, which may have been done by a pupil in Rembrandt’s workshop</p>
+                                    <a href="#" class="highlights--button">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="mosaic">
+                            <div class="mosaic-item mosaic--a"><img src="images/mosaic-a.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--b"><img src="images/mosaic-b.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--c"><img src="images/mosaic-c.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--d"><img src="images/mosaic-d.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--e"><img src="images/mosaic-e.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--f"><img src="images/mosaic-f.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--g"><img src="images/mosaic-g.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--h"><img src="images/mosaic-h.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--i"><img src="images/mosaic-i.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--j"><img src="images/mosaic-j.jpg" alt="..."></div>
+                            <div class="mosaic-item mosaic--k"><img src="images/mosaic-k.jpg" alt="..."></div>
+                        </div>
+                    </article>';
         return $output;
     }
 }
