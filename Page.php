@@ -19,8 +19,8 @@ class Page implements PageInterface
      * Link Title => Link
      */
     public const MENU_TOP = [
-        'My Account'    => 'index.php?page=account',
-        'Wish List'     => '#',
+        'My Account' => 'index.php?page=account',
+        'Wish List' => '#',
         'Shopping Cart' => '#',
     ];
 
@@ -30,10 +30,10 @@ class Page implements PageInterface
      * Link Title => Link
      */
     public const MENU_MAIN = [
-        'Home'      => 'index.php',
-        'About Us'  => 'index.php?page=about-us',
+        'Home' => 'index.php',
+        'About Us' => 'index.php?page=about-us',
         'Art Works' => 'index.php?page=artwork',
-        'Artists'   => 'index.php?page=artist',
+        'Artists' => 'index.php?page=artist',
     ];
 
     /**
@@ -77,7 +77,13 @@ class Page implements PageInterface
      */
     public function getPage()
     {
-        return $this->getHead() . $this->getBody();
+        $output = '';
+        $output .= $this->getDoctype();
+        $output .= $this->getOpenHtmlTag();
+        $output .= $this->getHead();
+        $output .= $this->getBody();
+        $output .= $this->getCloseHtmlTag();
+        return $output;
     }
 
     /**
@@ -89,17 +95,20 @@ class Page implements PageInterface
         exit;
     }
 
+
     /**
      * Get contents of the head tag
      */
     public function getHead()
     {
-        $output = '<!DOCTYPE html>
-          <html lang="en">
+        $output = '
           <head>
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
               <title>' . $this->getTitle() . '</title>
               <link rel="stylesheet" href="_aux/default.css">
+              <!-- Fonts -->              
+              <link href="http://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css">
+              <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
           </head>';
         return $output;
     }
@@ -146,8 +155,8 @@ class Page implements PageInterface
     public function getNavigationTop()
     {
         $output = '<nav class="user"><ul>';
-        foreach (self::MENU_TOP as $title => $link ){
-            $output .= '<li><a href="'.$link.'">'.$title.'</a></li>';
+        foreach (self::MENU_TOP as $title => $link) {
+            $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
         }
         $output .= '</ul></nav>';
         return $output;
@@ -159,8 +168,8 @@ class Page implements PageInterface
     public function getNavigationMain()
     {
         $output = '<nav><ul>';
-        foreach (self::MENU_MAIN as $title => $link){
-            $output .= '<li><a href="'.$link.'">'.$title.'</a></li>';
+        foreach (self::MENU_MAIN as $title => $link) {
+            $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
         }
         $output .= '</ul></nav>';
         return $output;
@@ -175,5 +184,35 @@ class Page implements PageInterface
         $output .= '<p>All images are copyright to their owners. This is just a hypothetical site ©2020 Copyright Art Store</p>';
         $output .= '</footer>';
         return $output;
+    }
+
+    /**
+     * Get Doctype
+     *
+     * @return string
+     */
+    public function getDoctype()
+    {
+        return '<!DOCTYPE html>';
+    }
+
+    /**
+     * Get Open HTML tag
+     *
+     * @return string
+     */
+    public function getOpenHtmlTag()
+    {
+        return '<html lang="en">';
+    }
+
+    /**
+     * Get Doctype
+     *
+     * @return string
+     */
+    public function getCloseHtmlTag()
+    {
+        return '</html>';
     }
 }
