@@ -91,6 +91,11 @@ nav.user a:hover {
 
 
 /* Artwork Page */
+
+.artwork_info {
+  margin: 10px 0;
+}
+
 .artwork {
     padding: 0px 7px 7px 7px;
     line-height: 24px;
@@ -236,3 +241,25 @@ nav.user a:hover {
   padding: 3px 6px;
   cursor: pointer;
 }
+
+
+/* Rating Section */
+
+.rating-section {
+  display: inline-block;
+  min-width: 200px;
+  margin: 20px 0;
+}
+
+.rating-section .section-header {
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 0.5px solid black;
+  padding-bottom: 2px;
+}
+
+.rating-box {
+
+}
+
+/* End Rating Section */

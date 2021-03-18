@@ -13,97 +13,97 @@ class Artwork extends Model
      * ID of the artwork
      * @var integer
      */
-    public $id;
+    private $id;
 
     /**
      * Id of the artist
      * @var integer
      */
-    public $artist_id;
+    private $artist_id;
 
     /**
      * Artist full name
      * @var string
      */
-    public $artist_name;
+    private $artist_name;
 
     /**
      * Artwork Title
      * @var string
      */
-    public $title;
+    private $title;
 
     /**
      * Artwork Description
      * @var string
      */
-    public $description;
+    private $description;
 
     /**
      * Price of the Artwork
      * @var float
      */
-    public $price;
+    private $price;
 
     /**
      * Date of the artwork
      * @var string
      */
-    public $date;
+    private $date;
 
     /**
      * Medium of the Artwork
      * @var string
      */
-    public $medium;
+    private $medium;
 
     /**
      * Width of the Artwork in cm
      *
      * @var integer
      */
-    public $width;
+    private $width;
 
     /**
      * Height of the Artwork in cm
      *
      * @var integer
      */
-    public $height;
+    private $height;
 
     /**
      * Home of the artwork
      *
      * @var string
      */
-    public $home;
+    private $home;
 
     /**
      * Genres of the artwork
      *
      * @var
      */
-    public $genres;
+    private $genres;
 
     /**
      * Subjects of the artwork
      *
      * @var
      */
-    public $subjects;
+    private $subjects;
 
     /**
      * Similar artwork (not used yet)
      *
      * @var string
      */
-    public $similar_artwork;
+    private $similar_artwork;
 
     /**
      * Path to the image of the artwork
      * @var string
      */
-    public $image;
+    private $image;
 
 
     // Data Set

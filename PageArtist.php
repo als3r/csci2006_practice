@@ -1,13 +1,23 @@
 <?php
 require_once 'Page.php';
 require_once 'Artist.php';
+require_once 'Rating.php';
 
 class PageArtist extends Page
 {
     public $title = 'Artist';
     public const NAME = 'Artist';
 
-    public $artist;
+    public $artist  = null;
+    public $rating  = null;
+
+    public $user_id = null;
+
+
+    public function __construct() {
+      $this->rating = new Rating();
+      $this->user_id = 11;
+    }
 
     /**
      * Get Artist
@@ -64,10 +74,64 @@ class PageArtist extends Page
               </tr>
           </tbody>
       </table>
+      ' . $this->getRatingSection() . '
   </article>
   ';
         return $html;
     }
+
+
+    /**
+     * Get rating section;
+     */
+    public function getRatingSection(){
+
+        $avg_rating = $this->rating->getAverageRating($this->artist->getId(), Rating::TYPE_ARTIST);
+
+        $html = '
+          <section class="rating-section">
+            <h4 class="section-header">Rating</h4>';
+            if($avg_rating > 0) {
+              $html .= '<div>'.number_format($avg_rating, 2).' of 10 stars</div>';
+            } else {
+              $html .= '<div class="rating-box">Not Rayted yet</div>';
+            }
+            $html .= $this->getRatingForm()
+            .'
+          </section>
+        ';
+
+        return $html;
+    }
+
+
+    /**
+     * Get rating form;
+     */
+    function getRatingForm(){
+
+        $avg_rating = $this->rating->getAverageRating($this->artist->getId(), Rating::TYPE_ARTWORK);
+
+        $html = '
+          <form class="rating-section" method="post" action="process-rating.php">
+            <h4 class="section-header">Rate Artist</h4>
+            <label for="rating-form__rating" class="rating-form__label">Select Rating:</label>
+            <select id="rating-form__rating" class="rating-form__rating" name="rating_value">';
+            for ($i=1; $i <=10 ; $i++) {
+              $html.='<option value="'.$i.'">'.$i.'</option>';
+            }
+        $html.=
+            '</select>
+            <input type="hidden" name="user_id" value="'.(int) $this->user_id.'" />
+            <input type="hidden" name="rating_type" value="'.Rating::TYPE_ARTIST.'" />
+            <input type="hidden" name="rating_entity_id" value="'.(int) $this->artist->getId().'" />
+            <button type="submit" class="rating-form__submit">Submit</button>
+          </section>
+        ';
+
+        return $html;
+    }
+
 
     /**
      * Get contents of related items section;
