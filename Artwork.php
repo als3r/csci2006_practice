@@ -9,177 +9,61 @@ require_once 'Model.php';
  */
 class Artwork extends Model
 {
+
+    static $enittyName = "Artwork";
+    static $table      = "Artwork";
+    static $table_id   = "artwork_id";
+
     /**
      * ID of the artwork
      * @var integer
      */
-    public $id;
+    public $artwork_id;
 
     /**
-     * Id of the artist
-     * @var integer
+     * Artist
+     * @var Artist
      */
-    public $artist_id;
-
-    /**
-     * Artist full name
-     * @var string
-     */
-    public $artist_name;
+    public $artwork_artist;
 
     /**
      * Artwork Title
      * @var string
      */
-    public $title;
+    public $artwork_name;
+
+    /**
+     * Id of the location
+     * @var integer
+     */
+    public $artwork_loc;
 
     /**
      * Artwork Description
      * @var string
      */
-    public $description;
+    public $artwork_desc;
 
     /**
      * Price of the Artwork
      * @var float
      */
-    public $price;
-
-    /**
-     * Date of the artwork
-     * @var string
-     */
-    public $date;
-
-    /**
-     * Medium of the Artwork
-     * @var string
-     */
-    public $medium;
-
-    /**
-     * Width of the Artwork in cm
-     *
-     * @var integer
-     */
-    public $width;
-
-    /**
-     * Height of the Artwork in cm
-     *
-     * @var integer
-     */
-    public $height;
-
-    /**
-     * Home of the artwork
-     *
-     * @var string
-     */
-    public $home;
-
-    /**
-     * Genres of the artwork
-     *
-     * @var
-     */
-    public $genres;
-
-    /**
-     * Subjects of the artwork
-     *
-     * @var
-     */
-    public $subjects;
-
-    /**
-     * Similar artwork (not used yet)
-     *
-     * @var string
-     */
-    public $similar_artwork;
-
-    /**
-     * Path to the image of the artwork
-     * @var string
-     */
-    public $image;
+    public $artwork_reprintPrice;
 
 
     // Data Set
     public $data = [
-        1 => [
-            "id" => 1,
-            "artist_id" => 1,
-            "artist_name" => "Elisabeth Louise Le Brun",
-            "title" => "Self-portrait in a Straw Hat",
-            "description" => "The painting appears, after cleaning, to be an autograph replica of a picture, the original of which was painted in Brussels in 1782 in free imitation of Rubens’s ’Chapeau de Paille’, which LeBrun had seen in Antwerp. It was exhibited in Paris in 1782 at the Salon de la Correspondance. LeBrun’s original is recorded in a private collection in France.",
-            "price" => 700,
-            "date" => 1782,
-            "medium" => "Oil on canvas",
-            "width" => 98,
-            "height" => 71,
-            "home" => "National Gallery, London",
-            "genres" => "Realism, Rococo",
-            "subjects" => "People, Arts",
-            "similar_artwork" => "",
-            "image" => "13.jpg",
-        ],
-        2 => [
-            "id" => 2,
-            "artist_id" => 2,
-            "artist_name" => "Anthony van Dyck",
-            "title" => "William II, Prince of Orange, and his Bride, Mary Stuart",
-            "description" => "The boy is fourteen and the girl only nine. William’s father, Frederick Henry, commissioned the celebrated Flemish painter Van Dyck to portray the young Dutch prince and English princess on the occasion of their marriage in London.
-<br />The union with the daughter of the English king enhanced the status of the House of Orange.
-<br />On her gown, Mary wears a gift from William, a large diamond brooch.",
-            "price" => 800,
-            "date" => 1641,
-            "medium" => "Oil on canvas",
-            "width" => 180,
-            "height" => 132.2,
-            "home" => "National Gallery, London",
-            "genres" => "Realism",
-            "subjects" => "People, Arts",
-            "similar_artwork" => "",
-            "image" => "374.jpg",
-        ],
-        3 => [
-            "id" => 3,
-            "artist_id" => 3,
-            "artist_name" => "Nicolaes van Verendael",
-            "title" => "Still Life with Flowers in a Glass Vase",
-            "description" => "This painting dates to the period in Antwerp when hothouses became popular among the nobility and patrons ordered paintings to record their personal hothouse triumphs. Not all of the blooms would have bloomed at the same time, and the painting was meant more for decoration than for botanical accuracy. The work shows the following flower species: Rosa alba, Tropaeolum majus, Hepatica nobilis, rosemary, Tulipa, Delphinium, Aquilegia, Punica granatum, Rosa × centifolia.",
-            "price" => 500,
-            "date" => 1660,
-            "medium" => "Oil on copper",
-            "width" => 49.5,
-            "height" => 39.5,
-            "home" => "National Gallery, London",
-            "genres" => "Realism, Rococo",
-            "subjects" => "People, Arts",
-            "similar_artwork" => "",
-            "image" => "183.jpg",
-        ],
+
     ];
 
     // Default Data for a record
     public const DEFAULT_DATA = [
         "id" => null,
         "artist_id" => 0,
-        "artist_name" => "Default Artist",
-        "title" => "Default Title",
-        "description" => "Default Description",
-        "price" => 0,
-        "date" => 0,
-        "medium" => "Default Medium",
-        "width" => 0,
-        "height" => 0,
-        "home" => "Default Home",
-        "genres" => "Default Genres",
-        "subjects" => "Default Subjects",
-        "similar_artwork" => "",
-        "image" => "default.jpg",
+        "artwork_name" => "",
+        "artwork_loc" => 0,
+        "artwork_reprintPrice" => 0,
+        "artwork_desc" => "",
     ];
 
 
@@ -190,9 +74,13 @@ class Artwork extends Model
      *
      * @param $id
      */
-    public function __construct($id = 0)
+    public function __construct($id = 0, $pdo = null)
     {
         parent::__construct($id);
+        if($pdo){
+            $this->setPdoDb($pdo);
+        }
+        $this->loadData($id);
     }
 
 
@@ -209,22 +97,22 @@ class Artwork extends Model
             return false;
         }
 
-        $this->id              = isset($arr["id"])              ? $arr["id"] : null;
-        $this->artist_id       = isset($arr["artist_id"])       ? $arr["artist_id"] : '';
-        $this->artist_name     = isset($arr["artist_name"])     ? $arr["artist_name"] : '';
-        $this->title           = isset($arr["title"])           ? $arr["title"] : '';
-        $this->description     = isset($arr["description"])     ? $arr["description"] : '';
-        $this->price           = isset($arr["price"])           ? $arr["price"] : '';
-        $this->date            = isset($arr["date"])            ? $arr["date"] : '';
-        $this->medium          = isset($arr["medium"])          ? $arr["medium"] : '';
-        $this->width           = isset($arr["width"])           ? $arr["width"] : '';
-        $this->height          = isset($arr["height"])          ? $arr["height"] : '';
-        $this->home            = isset($arr["home"])            ? $arr["home"] : '';
-        $this->genres          = isset($arr["genres"])          ? $arr["genres"] : '';
-        $this->subjects        = isset($arr["subjects"])        ? $arr["subjects"] : '';
-        $this->similar_artwork = isset($arr["similar_artwork"]) ? $arr["similar_artwork"] : '';
-        $this->image           = isset($arr["image"])           ? $arr["image"] : '';
-        $this->log("Retrieved Object: (type: Artwork, id: ".(int) $id.")" . $this->toString());
+        if( isset(
+            $arr["artwork_id"],
+            $arr["artwork_artist"],
+            $arr["artwork_name"],
+            $arr["artwork_loc"],
+            $arr["artwork_reprintPrice"],
+            $arr["artwork_desc"]
+        )) {
+            $this->setArtworkId($arr["artwork_id"]);
+            $this->setArtworkArtist($arr["artwork_artist"]);
+            $this->setArtworkName($arr["artwork_name"]);
+            $this->setArtworkLoc($arr["artwork_loc"]);
+            $this->setArtworkReprintPrice($arr["artwork_reprintPrice"]);
+            $this->setArtworkDescription($arr["artwork_desc"]);
+        }
+        $this->log("Retrieved Object: (type: Artist, id: ".(int) $id.")" . $this->toString());
         return true;
     }
 
@@ -237,8 +125,9 @@ class Artwork extends Model
      */
     public function getData($id = 0)
     {
-        if (isset($this->data[(int)$id])) {
-            return $this->data[(int)$id];
+        $record = $this->retrieveOneById($id);
+        if ($record) {
+            return $record;
         } else {
             return self::DEFAULT_DATA;
         }
@@ -246,17 +135,58 @@ class Artwork extends Model
 
 
     /**
-     * Create a record of artwork
+     * Get id => full name pairs for all Artists
+     *
+     * @param $pdo
+     * @return mixed
+     */
+    public static function getAll($pdo){
+
+        $stmt = $pdo->prepare('SELECT artwork_id as id, artwork_name as name
+                FROM  ' . self::$table)
+        ;
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
+     * Create a record of artowrk
      *
      * @return mixed|void
      */
     public function create()
     {
-        $values = $this->getArrayOfAttributes();
-        // mocking creating a record in db, $created_id - "returned" id from db
-        $created_id = rand(100,200);
-        $values['id'] = $created_id;
-        $this->log("Object Create(type: Artwork, id: " . (int) $values['id'] . "): " . $this->printArray($values) . PHP_EOL);
+        $this->log("Start. Create ".self::$enittyName);
+        if($this->getPdoDb() !== null){
+            $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
+                (
+                    artwork_id,
+                    artwork_artist,
+                    artwork_name,
+                    artwork_loc,
+                    artwork_reprintPrice,
+                    artwork_desc
+                )
+                VALUES(
+                    :artwork_id,
+                    :artwork_artist,
+                    :artwork_name,
+                    :artwork_loc,
+                    :artwork_reprintPrice,
+                    :artwork_desc
+                )
+            ');
+            $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
+            if(!$res){
+                $this->log("Record was not created. Type: ".self::$enittyName." ID: ". $this->getPdoDb()->lastInsertId() . PHP_EOL);
+                return false;
+            }
+            $this->log("Record was created. Type: ".self::$enittyName." ID: ". $this->getPdoDb()->lastInsertId() . PHP_EOL);
+            return $this->getPdoDb()->lastInsertId();
+        }
+        $this->log("Cannot Connet to DB. Record was not created. Type: ".self::$enittyName." ID: " . PHP_EOL);
+        return false;
     }
 
 
@@ -268,9 +198,47 @@ class Artwork extends Model
      */
     public function retrieveOneById($id)
     {
-        $this->log("Start Retireiving Artwork by ID " . (int) $id);
-        $this->loadData($id);
-        $this->log("End Retireiving Artwork by ID" . PHP_EOL);
+        $this->log("Start Retireiving ".self::$enittyName." by ID " . (int) $id);
+        if($this->getPdoDb() !== null){
+            $stmt = $this->getPdoDb()->prepare('SELECT *
+                FROM  ' . self::$table    . '
+                WHERE ' . self::$table_id . ' = ?')
+            ;
+            $stmt->execute([$id]);
+            $record = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->log("Result Retireiving ".self::$enittyName." by ID: record retrieved " . PHP_EOL);
+            return $record;
+        }
+        $this->log("Result Retireiving ".self::$enittyName." by ID: false " . PHP_EOL);
+        $this->log("End Retireiving ".self::$enittyName." by ID" . PHP_EOL);
+        return false;
+    }
+
+
+    /**
+     * Update record
+     *
+     * @return false|mixed|void
+     */
+    public function update(){
+        if($this->getArtworkId() !== null){
+
+            $values = $this->getArrayOfAttributes();
+
+            $attributes_changed_array = [];
+            foreach ($this->getAttributesModified() as $changed_attribute){
+                if(isset($values[$changed_attribute])){
+                    $attributes_changed_array[$changed_attribute] = $values[$changed_attribute];
+                }
+            }
+
+            if(isset($attributes_changed_array[self::$table_id])){
+                unset($attributes_changed_array[self::$table_id]);
+            }
+
+            return $this->updateOneById($this->getArtworkId(), $attributes_changed_array);
+        }
+        return false;
     }
 
 
@@ -283,18 +251,39 @@ class Artwork extends Model
      */
     public function updateOneById($id, $values = [])
     {
-        if(empty($values)){
-            $values = $this->getArrayOfAttributes();
-        }
+        $this->log("Start. Update ".self::$enittyName);
+        if($this->getPdoDb() !== null && is_array($values) && count($values)){
 
-        $attributes_changed_array = [];
-        foreach ($this->getAttributesModified() as $changed_attribute){
-            if(isset($values[$changed_attribute]))
-            $attributes_changed_array[$changed_attribute] = $values[$changed_attribute];
-        }
+            $keys = array_keys($values);
+            $update_columns_params = [];
+            foreach ($keys as $column){
+                $update_columns_params[] = $column . " = :" . $column;
+            }
+            $update_columns = implode(", ", $update_columns_params);
 
-        $this->log("Object Edits Saved (type: Artwork, id: " . (int) $id . "): Changed attributes: " . $this->printArray($attributes_changed_array));
-        $this->log("Object Edits Saved (type: Artwork, id: " . (int) $id . "): New Object: " . $this->printArray($this->getArrayOfAttributes()) . PHP_EOL);
+            $update_values = [];
+            foreach ($values as $k => $v){
+                $update_values[":" . $k] = $v;
+            }
+            $update_values[":" . self::$table_id] = $id;
+
+            $sql = 'UPDATE ' . self::$table    . ' SET
+                    '.$update_columns .'
+                WHERE '.self::$table_id.' = :'.self::$table_id.' 
+            ';
+
+            $stmt = $this->getPdoDb()->prepare($sql);
+            $res = $stmt->execute($update_values);
+
+            if(!$res){
+                $this->log("Record was not update. Type: ".self::$enittyName." ID: ". $id . PHP_EOL);
+                return false;
+            }
+            $this->log("Record was update. Type: ".self::$enittyName." ID: ". $id . PHP_EOL);
+            return $this->getPdoDb()->lastInsertId();
+        }
+        $this->log("Cannot Connet to DB. Record was not update. Type: ".self::$enittyName." ID: " . (int) $id . PHP_EOL);
+        return false;
     }
 
 
@@ -306,7 +295,18 @@ class Artwork extends Model
      */
     public function deleteOneById($id)
     {
-        $this->log("Object Deleted (type: Artwork, id: " . (int) $id . ")". PHP_EOL);
+        $this->log("Start Deleting ".self::$enittyName." by ID " . (int) $id);
+        if($this->getPdoDb() !== null){
+            $stmt = $this->getPdoDb()->prepare('DELETE FROM  ' . self::$table    . '
+                WHERE ' . self::$table_id . ' = ?')
+            ;
+            $res = $stmt->execute([(int) $id]);
+            $this->log("Result Deleting ".self::$enittyName." by ID: record deleted " . PHP_EOL);
+            return $res;
+        }
+        $this->log("Result Deleting ".self::$enittyName." by ID: false " . PHP_EOL);
+        $this->log("End Deleting ".self::$enittyName." by ID" . PHP_EOL);
+        return false;
     }
 
     /**
@@ -316,21 +316,28 @@ class Artwork extends Model
      */
     private function getArrayOfAttributes(){
         $array = [];
-        $array["id"]              = $this->id;
-        $array["artist_id"]       = $this->artist_id;
-        $array["artist_name"]     = $this->artist_name;
-        $array["title"]           = $this->title;
-        $array["description"]     = $this->description;
-        $array["price"]           = $this->price;
-        $array["date"]            = $this->date;
-        $array["medium"]          = $this->medium;
-        $array["width"]           = $this->width;
-        $array["height"]          = $this->height;
-        $array["home"]            = $this->home;
-        $array["genres"]          = $this->genres;
-        $array["subjects"]        = $this->subjects;
-        $array["similar_artwork"] = $this->similar_artwork;
-        $array["image"]           = $this->image;
+        $array["artwork_id"]           = $this->getArtworkId();
+        $array["artwork_artist"]       = $this->getArtworkArtist();
+        $array["artwork_name"]         = $this->getArtworkName();
+        $array["artwork_loc"]          = $this->getArtworkLoc();
+        $array["artwork_reprintPrice"] = $this->getArtworkReprintPrice();
+        $array["artwork_desc"]         = $this->getArtworkDescription();
+        return $array;
+    }
+
+    /**
+     * Get all of the attributes in array for PDO Stmp
+     *
+     * @return array
+     */
+    private function getArrayOfAttributesForSTMT(){
+        $array = [];
+        $array[":artwork_id"]           = $this->getArtworkId();
+        $array[":artwork_artist"]       = $this->getArtworkArtist();
+        $array[":artwork_name"]         = $this->getArtworkName();
+        $array[":artwork_loc"]          = $this->getArtworkLoc();
+        $array[":artwork_reprintPrice"] = $this->getArtworkReprintPrice();
+        $array[":artwork_desc"]         = $this->getArtworkDescription();
         return $array;
     }
 
@@ -346,19 +353,40 @@ class Artwork extends Model
      */
     public function getId()
     {
-        return $this->id;
+        return $this->getArtworkId();
     }
 
     /**
      * Set id of the record
      *
-     * @param integer $id
+     * @param integer artwork_id
      * @return boolean
      */
-    public function setId($id)
+    public function setId($artwork_id)
     {
-        if($this->id != $id){
-            $this->id = $id;
+        return $this->setArtworkId($artwork_id);
+    }
+
+    /**
+     * Get ID
+     *
+     * @return integer
+     */
+    public function getArtworkId()
+    {
+        return $this->artwork_id;
+    }
+
+    /**
+     * Set id of the record
+     *
+     * @param integer artwork_id
+     * @return boolean
+     */
+    public function setArtworkId($artwork_id)
+    {
+        if($this->artwork_id != $artwork_id){
+            $this->artwork_id = $artwork_id;
             $this->register_a_change("id");
             return true;
         }
@@ -366,117 +394,108 @@ class Artwork extends Model
     }
 
     /**
-     * Get artist id for artwork
+     * Get artwork artist for artwork
      *
      * @return integer
      */
-    public function getArtistId()
+    public function getArtworkArtist()
     {
-        return $this->artist_id;
+        return $this->artwork_artist;
     }
 
     /**
-     * Set artist id for artwork
+     * Set artwork artist
      *
-     * @param integer $artist_id
+     * @param integer $artwork_artist
      * @return boolean
      */
-    public function setArtistId($artist_id)
+    public function setArtworkArtist($artwork_artist)
     {
-        if($this->artist_id != $artist_id){
-            $this->artist_id = $artist_id;
-            $this->register_a_change("artist_id");
+        if($this->artwork_artist != $artwork_artist){
+            $this->artwork_artist = $artwork_artist;
+            $this->register_a_change("artwork_artist");
             return true;
         }
         return false;
     }
 
     /**
-     * Get artist name for artwork
-     *
-     * @return string
-     */
-    public function getArtistName()
-    {
-        return $this->artist_name;
-    }
-
-    /**
-     * Set artist name for artwork
-     *
-     * @param string $artist_name
-     * @return boolean
-     */
-    public function setArtistName($artist_name)
-    {
-        if($this->artist_name != $artist_name){
-            $this->artist_name = $artist_name;
-            $this->register_a_change("artist_name");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get artwork title
+     * Get artwork name
      *
      * @return mixed
      */
-    public function getTitle()
+    public function getArtworkName()
     {
-        return $this->title;
+        return $this->artwork_name;
     }
 
     /**
-     * Set artwork title
+     * Set artwork name
      *
-     * @param string $title
+     * @param string $artwork_name
      * @return boolean
      */
-    public function setTitle($title)
+    public function setArtworkName($artwork_name)
     {
-        if($this->title != $title){
-            $this->title = $title;
-            $this->register_a_change("title");
+        if($this->artwork_name != $artwork_name){
+            $this->artwork_name = $artwork_name;
+            $this->register_a_change("artwork_name");
             return true;
         }
         return false;
     }
 
     /**
-     * Get artwork description
+     * Get artwork artwork_loc
      *
      * @return string
      */
-    public function getDescription()
+    public function getArtworkLoc()
     {
-        return $this->description;
+        return $this->artwork_loc;
     }
 
     /**
-     * Set artwork description
+     * Set artwork artwork_loc
      *
-     * @param string $description
+     * @param string $artwork_loc
      * @return boolean
      */
-    public function setDescription($description)
+    public function setArtworkLoc($artwork_loc)
     {
-        if($this->description != $description){
-            $this->description = $description;
-            $this->register_a_change("description");
+        if($this->artwork_loc != $artwork_loc){
+            $this->artwork_loc = $artwork_loc;
+            $this->register_a_change("artwork_loc");
             return true;
         }
         return false;
     }
 
+
     /**
-     * Get price for artwork
+     * Get artwork artwork_desc
      *
      * @return string
      */
-    public function getPriceFormatted()
+    public function getArtworkDescription()
     {
-        return '$' . number_format($this->getPrice(), 2);
+        return $this->artwork_desc;
+    }
+
+    /**
+     * Set artwork artwork_desc
+     *
+     * @param string $artwork_desc
+     * @return boolean
+     */
+    public function setArtworkDescription($artwork_desc)
+    {
+        if($this->artwork_desc != $artwork_desc){
+            $this->artwork_desc = $artwork_desc;
+            $this->register_a_change("artwork_desc");
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -484,251 +503,21 @@ class Artwork extends Model
      *
      * @return float
      */
-    public function getPrice()
+    public function getArtworkReprintPrice()
     {
-        return $this->price;
+        return $this->artwork_reprintPrice;
     }
 
     /**
      * Set Price for artwork
      *
-     * @param float $price
+     * @param float $artwork_reprintPrice
      */
-    public function setPrice($price)
+    public function setArtworkReprintPrice($artwork_reprintPrice)
     {
-        if($this->price != $price){
-            $this->price = $price;
-            $this->register_a_change("price");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get date for the artwork
-     *
-     * @return string
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * Set date for the artwork
-     *
-     * @param string $date
-     * @return boolean
-     */
-    public function setDate($date)
-    {
-        if($this->date != $date){
-            $this->date = $date;
-            $this->register_a_change("date");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get medium
-     *
-     * @return string
-     */
-    public function getMedium()
-    {
-        return $this->medium;
-    }
-
-    /**
-     * Set medium for artwork
-     *
-     * @param string $medium
-     * @return boolean
-     */
-    public function setMedium($medium)
-    {
-        if($this->medium != $medium){
-            $this->medium = $medium;
-            $this->register_a_change("medium");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get width of the artwork in cm
-     *
-     * @return integer
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * @param integer $width
-     * @return boolean
-     */
-    public function setWidth($width)
-    {
-        if($this->width != $width){
-            $this->width = $width;
-            $this->register_a_change("width");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get height of the artwork in cm
-     *
-     * @return integer
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     * @param integer $height
-     * @return boolean
-     */
-    public function setHeight($height)
-    {
-        if($this->height != $height){
-            $this->height = $height;
-            $this->register_a_change("height");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get home
-     *
-     * @return string
-     */
-    public function getHome()
-    {
-        return $this->home;
-    }
-
-    /**
-     * Set home of the artwork
-     *
-     * @param string $home
-     * @return boolean
-     */
-    public function setHome($home)
-    {
-        if($this->home != $home){
-            $this->home = $home;
-            $this->register_a_change("home");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get genres
-     *
-     * @return string
-     */
-    public function getGenres()
-    {
-        return $this->genres;
-    }
-
-    /**
-     * Set genres
-     *
-     * @param string $genres
-     * @return boolean
-     */
-    public function setGenres($genres)
-    {
-        if($this->genres != $genres){
-            $this->genres = $genres;
-            $this->register_a_change("genres");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get subjects
-     *
-     * @return string
-     */
-    public function getSubjects()
-    {
-        return $this->subjects;
-    }
-
-    /**
-     * Set subjects
-     *
-     * @param string $subjects
-     * @return boolean
-     */
-    public function setSubjects($subjects)
-    {
-        if($this->subjects != $subjects){
-            $this->subjects = $subjects;
-            $this->register_a_change("subjects");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get similar artwork
-     *
-     * @return string
-     */
-    public function getSimilarArtwork()
-    {
-        return $this->similar_artwork;
-    }
-
-    /**
-     * Set Similar artwork
-     *
-     * @param string $similar_artwork
-     * @return boolean
-     */
-    public function setSimilarArtwork($similar_artwork)
-    {
-        if($this->similar_artwork != $similar_artwork){
-            $this->similar_artwork = $similar_artwork;
-            $this->register_a_change("similar_artwork");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get path to the artwork image
-     *
-     * @return string
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * Set path to image
-     *
-     * @param string $image
-     * @return boolean
-     */
-    public function setImage($image)
-    {
-        if($this->image != $image){
-            $this->image = $image;
-            $this->register_a_change("image");
+        if($this->artwork_reprintPrice != $artwork_reprintPrice){
+            $this->artwork_reprintPrice = $artwork_reprintPrice;
+            $this->register_a_change("artwork_reprintPrice");
             return true;
         }
         return false;

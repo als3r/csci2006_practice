@@ -9,133 +9,69 @@ require_once 'Model.php';
  */
 class Artist extends Model
 {
+    static $enittyName = "Artist";
+    static $table      = "Artist";
+    static $table_id   = "artist_id";
 
     /**
-     * ID of the artwork
+     * Artist ID of the artwork
      * @var integer
      */
-    private $id;
+    private $artist_id;
 
     /**
-     * First Name
+     * Artist Full Name
      * @var string
      */
-    private $first_name;
-
-    /**
-     * Middle Name
-     * @var string
-     */
-    private $middle_name;
+    private $artist_fullName;
 
     /*
      * Last Name
      * @var string
      */
-    private $last_name;
+    private $artist_lastName;
 
     /*
-     * Description
+     * Artist Year of the birth
      * @var string
      */
-    private $description;
+    private $artist_born;
 
     /*
-     * Genres
+     * Artist Year of the death
      * @var string
      */
-    private $genres;
+    private $artist_died;
 
     /*
-     * Нear of the birth of the artist
+     * Artist Origin
      * @var string
      */
-    private $year_birth;
+    private $artist_origin;
 
     /*
-     * Нear of the death of the artist
+     * Aritst Influence
      * @var string
      */
-    private $year_death;
+    private $artist_influence;
 
     /*
-     * Nationality of the artist
+     * Artist Description
      * @var string
      */
-    private $nationality;
+    private $artist_desc;
 
-    /*
-     * Title of the image (in case when artist work used as image)
-     * @var string
-     */
-    private $image_title;
-
-    /*
-     * Path to the image of the artist or artist's work
-     * @var string
-     */
-    private $image;
-
-    // Data Set
-    private $data = [
-        1 => [
-            "id" => 1,
-            "first_name" => "Elisabeth",
-            "middle_name" => "Louise",
-            "last_name" => "Le Brun",
-            "description" => "<p>Élisabeth Louise Vigée Le Brun; 16 April 1755 – 30 March 1842, also known as Madame Le Brun, was a prominent French portrait painter of the late 18th century.</p>
-                <p>Her artistic style is generally considered part of the aftermath of Rococo with elements of an adopted Neoclassical style. Her subject matter and color palette can be classified as Rococo, but her style is aligned with the emergence of Neoclassicism. Vigée Le Brun created a name for herself in Ancien Régime society by serving as the portrait painter to Marie Antoinette. She enjoyed the patronage of European aristocrats, actors, and writers, and was elected to art academies in ten cities.</p>
-                <p>Vigée Le Brun created some 660 portraits and 200 landscapes. In addition to many works in private collections, her paintings are owned by major museums, such as the Louvre, Hermitage Museum, National Gallery in London, Metropolitan Museum of Art in New York, and many other collections in continental Europe and the United States.</p>",
-            "year_birth" => 1755,
-            "year_death" => 1842,
-            "genres" => "Rococo, Neoclassicism",
-            "nationality" => "French",
-            "image_title" => "Self-portrait in a Straw Hat",
-            "image" => "13.jpg",
-        ],
-        2 => [
-            "id" => 2,
-            "first_name" => "Anthony",
-            "middle_name" => "",
-            "last_name" => "Van Dyck",
-            "description" => "<p>Sir Anthony van Dyck (Dutch pronunciation: [vɑn ˈdɛik], many variant spellings; 22 March 1599 – 9 December 1641) was a Flemish Baroque artist who became the leading court painter in England after success in the Southern Netherlands and Italy.</p>
-                <p>The seventh child of Frans van Dyck, a wealthy Antwerp silk merchant, Anthony painted from an early age. He was successful as an independent painter in his late teens, and became a master in the Antwerp guild in 1618. By this time he was working in the studio of the leading northern painter of the day, Peter Paul Rubens, who became a major influence on his work. Van Dyck worked in London for some months in 1621, then returned to Flanders for a brief time, before travelling to Italy, where he stayed until 1627, mostly in Genoa. In the late 1620s he completed his greatly admired Iconography series of portrait etchings, mostly of other artists. He spent five years in Flanders after his return from Italy, and from 1630 was court painter for the archduchess Isabella, Habsburg Governor of Flanders. In 1632 he returned to London to be the main court painter, at the request of Charles I of England.</p>
-                <p>With the exception of Holbein, van Dyck and his contemporary Diego Velázquez were the first painters of pre-eminent talent to work mainly as court portraitists, revolutionising the genre. He is best known for his portraits of the aristocracy, most notably Charles I, and his family and associates. Van Dyck became the dominant influence on English portrait-painting for the next 150 years. He also painted mythological and biblical subjects, including altarpieces, displayed outstanding facility as a draughtsman, and was an important innovator in watercolour and etching. His superb brushwork, apparently rather quickly painted, can usually be distinguished from the large areas painted by his many assistants. His portrait style changed considerably between the different countries he worked in, culminating in the relaxed elegance of his last English period. His influence extends into the modern period. The Van Dyke beard is named after him. During his lifetime, Charles I granted him a knighthood, and he was buried in St Paul's Cathedral, an indication of his standing at the time of his death.</p>",
-            "year_birth" => 1599,
-            "year_death" => 1641,
-            "genres" => "Baroque",
-            "nationality" => "Flemish",
-            "image_title" => "William II, Prince of Orange, and his Bride, Mary Stuart",
-            "image" => "293.jpg",
-        ],
-        3 => [
-            "id" => 3,
-            "first_name" => "Nicolaes",
-            "middle_name" => "",
-            "last_name" => "Van Verendael",
-            "description" => "<p>Nicolaes van Verendael or Nicolaes van Veerendael (Antwerp, 1640 – Antwerp, 1691) was a Flemish painter active in Antwerp who is mainly known for his flower paintings and vanitas still lifes. He was a frequent collaborator of other Antwerp artists to whose compositions he added the still life elements. He also painted a number of singeries, i.e, scenes with monkeys dressed and acting as humans.</p>",
-            "year_birth" => 1640,
-            "year_death" => 1691,
-            "genres" => "Still Life",
-            "nationality" => "Flemish",
-            "image_title" => "Still Life with Flowers in a Glass Vase",
-            "image" => "183.jpg",
-        ]
-    ];
 
     // Default Data for a record
     private const DEFAULT_DATA = [
-        "id" => null,
-        "first_name" => "Default First Name",
-        "middle_name" => "",
-        "last_name" => "Default Last Name",
-        "description" => "Default Description",
-        "year_birth" => 0,
-        "year_death" => 0,
-        "genres" => "Default Genres",
-        "nationality" => "Default Nationality",
-        "image_title" => "Default Image Title",
-        "image" => "default.jpg",
+        "artist_id"        => null,
+        "artist_fullName"  => "",
+        "artist_lastName"  => "",
+        "artist_born"      => 0,
+        "artist_died"      => 0,
+        "artist_origin"    => "",
+        "artist_influence" => "",
+        "artist_desc"      => "",
     ];
 
 
@@ -146,9 +82,13 @@ class Artist extends Model
      *
      * @param $id
      */
-    public function __construct($id = 0)
+    public function __construct($id = 0, $pdo = null)
     {
         parent::__construct($id);
+        if($pdo){
+            $this->setPdoDb($pdo);
+        }
+        $this->loadData($id);
     }
 
 
@@ -166,17 +106,25 @@ class Artist extends Model
             return false;
         }
 
-        $this->id          = isset($arr["id"])              ? $arr["id"] : null;
-        $this->first_name  = isset($arr["first_name"]) ? $arr["first_name"] : '';
-        $this->middle_name = isset($arr["middle_name"]) ? $arr["middle_name"] : '';
-        $this->last_name   = isset($arr["last_name"]) ? $arr["last_name"] : '';
-        $this->description = isset($arr["description"]) ? $arr["description"] : '';
-        $this->year_birth  = isset($arr["year_birth"]) ? $arr["year_birth"] : '';
-        $this->year_death  = isset($arr["year_death"]) ? $arr["year_death"] : '';
-        $this->genres      = isset($arr["genres"]) ? $arr["genres"] : '';
-        $this->nationality = isset($arr["nationality"]) ? $arr["nationality"] : '';
-        $this->image_title = isset($arr["image_title"]) ? $arr["image_title"] : '';
-        $this->image       = isset($arr["image"]) ? $arr["image"] : '';
+        if( isset(
+                $arr["artist_id"],
+                $arr["artist_fullName"],
+                $arr["artist_lastName"],
+                $arr["artist_born"],
+                $arr["artist_died"],
+                $arr["artist_origin"],
+                $arr["artist_influence"],
+                $arr["artist_desc"]
+        )) {
+            $this->setId(         $arr["artist_id"]);
+            $this->setFullName(   $arr["artist_fullName"]);
+            $this->setLastName(   $arr["artist_lastName"]);
+            $this->setBorn(       $arr["artist_born"]);
+            $this->setDied(       $arr["artist_died"]);
+            $this->setOrigin(     $arr["artist_origin"]);
+            $this->setInfluence(  $arr["artist_influence"]);
+            $this->setDescription($arr["artist_desc"]);
+        }
         $this->log("Retrieved Object: (type: Artist, id: ".(int) $id.")" . $this->toString());
         return true;
     }
@@ -190,11 +138,28 @@ class Artist extends Model
      */
     public function getData($id = 0)
     {
-        if (isset($this->data[(int)$id])) {
-            return $this->data[(int)$id];
+        $record = $this->retrieveOneById($id);
+        if ($record) {
+            return $record;
         } else {
             return self::DEFAULT_DATA;
         }
+    }
+
+
+    /**
+     * Get id => full name pairs for all Artists
+     *
+     * @param $pdo
+     * @return mixed
+     */
+    public static function getAll($pdo){
+
+        $stmt = $pdo->prepare('SELECT artist_id as id, artist_fullName as name
+                FROM  ' . self::$table)
+        ;
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
@@ -205,11 +170,40 @@ class Artist extends Model
      */
     public function create()
     {
-        $values = $this->getArrayOfAttributes();
-        // mocking creating a record in db, $created_id - "returned" id from db
-        $created_id = rand(100,200);
-        $values['id'] = $created_id;
-        $this->log("Object Create(type: Artist, id: " . (int) $values['id'] . "): " . $this->printArray($values) . PHP_EOL);
+        $this->log("Start. Create ".self::$enittyName);
+        if($this->getPdoDb() !== null){
+            $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
+                (
+                    artist_id,
+                    artist_fullName, 
+                    artist_lastName,
+                    artist_born,
+                    artist_died,
+                    artist_origin,
+                    artist_influence,
+                    artist_desc
+                )
+                VALUES(
+                    :artist_id,
+                    :artist_fullName,
+                    :artist_lastName,
+                    :artist_born,
+                    :artist_died,
+                    :artist_origin,
+                    :artist_influence,
+                    :artist_desc
+                )
+            ');
+            $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
+            if(!$res){
+                $this->log("Record was not created. Type: ".self::$enittyName." ID: ". $this->getPdoDb()->lastInsertId() . PHP_EOL);
+                return false;
+            }
+            $this->log("Record was created. Type: ".self::$enittyName." ID: ". $this->getPdoDb()->lastInsertId() . PHP_EOL);
+            return $this->getPdoDb()->lastInsertId();
+        }
+        $this->log("Cannot Connet to DB. Record was not created. Type: ".self::$enittyName." ID: " . PHP_EOL);
+        return false;
     }
 
 
@@ -219,11 +213,49 @@ class Artist extends Model
      * @param $id
      * @return mixed|void
      */
-    public function retrieveOneById($id)
+    public function retrieveOneById($id = 0)
     {
-        $this->log("Start Retireiving Artist by ID " . (int) $id);
-        $this->loadData($id);
-        $this->log("End Retireiving Artist by ID" . PHP_EOL);
+        $this->log("Start Retireiving ".self::$enittyName." by ID " . (int) $id);
+        if($this->getPdoDb() !== null){
+            $stmt = $this->getPdoDb()->prepare('SELECT *
+                FROM  ' . self::$table    . '
+                WHERE ' . self::$table_id . ' = ?')
+            ;
+            $stmt->execute([$id]);
+            $record = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->log("Result Retireiving ".self::$enittyName." by ID: record retrieved " . PHP_EOL);
+            return $record;
+        }
+        $this->log("Result Retireiving ".self::$enittyName." by ID: false " . PHP_EOL);
+        $this->log("End Retireiving ".self::$enittyName." by ID" . PHP_EOL);
+        return false;
+    }
+
+
+    /**
+     * Update record
+     *
+     * @return false|mixed|void
+     */
+    public function update(){
+        if($this->getId() !== null){
+
+            $values = $this->getArrayOfAttributes();
+
+            $attributes_changed_array = [];
+            foreach ($this->getAttributesModified() as $changed_attribute){
+                if(isset($values[$changed_attribute])){
+                    $attributes_changed_array[$changed_attribute] = $values[$changed_attribute];
+                }
+            }
+
+            if(isset($attributes_changed_array[self::$table_id])){
+                unset($attributes_changed_array[self::$table_id]);
+            }
+
+            return $this->updateOneById($this->getId(), $attributes_changed_array);
+        }
+        return false;
     }
 
 
@@ -236,18 +268,39 @@ class Artist extends Model
      */
     public function updateOneById($id, $values = [])
     {
-        if(empty($values)){
-            $values = $this->getArrayOfAttributes();
-        }
+        $this->log("Start. Update ".self::$enittyName);
+        if($this->getPdoDb() !== null && is_array($values) && count($values)){
 
-        $attributes_changed_array = [];
-        foreach ($this->getAttributesModified() as $changed_attribute){
-            if(isset($values[$changed_attribute]))
-                $attributes_changed_array[$changed_attribute] = $values[$changed_attribute];
-        }
+            $keys = array_keys($values);
+            $update_columns_params = [];
+            foreach ($keys as $column){
+                $update_columns_params[] = $column . " = :" . $column;
+            }
+            $update_columns = implode(", ", $update_columns_params);
 
-        $this->log("Object Edits Saved (type: Artist, id: " . (int) $id . "): Changed attributes: " . $this->printArray($attributes_changed_array));
-        $this->log("Object Edits Saved (type: Artist, id: " . (int) $id . "): New Object: " . $this->printArray($values) . PHP_EOL);
+            $update_values = [];
+            foreach ($values as $k => $v){
+                $update_values[":" . $k] = $v;
+            }
+            $update_values[":" . self::$table_id] = $id;
+
+            $sql = 'UPDATE ' . self::$table    . ' SET
+                    '.$update_columns .'
+                WHERE '.self::$table_id.' = :'.self::$table_id.' 
+            ';
+
+            $stmt = $this->getPdoDb()->prepare($sql);
+            $res = $stmt->execute($update_values);
+
+            if(!$res){
+                $this->log("Record was not update. Type: ".self::$enittyName." ID: ". $id . PHP_EOL);
+                return false;
+            }
+            $this->log("Record was update. Type: ".self::$enittyName." ID: ". $id . PHP_EOL);
+            return $this->getPdoDb()->lastInsertId();
+        }
+        $this->log("Cannot Connet to DB. Record was not update. Type: ".self::$enittyName." ID: " . (int) $id . PHP_EOL);
+        return false;
     }
 
 
@@ -259,7 +312,18 @@ class Artist extends Model
      */
     public function deleteOneById($id)
     {
-        $this->log("Object Deleted (type: Artist, id: " . (int) $id . ")" . PHP_EOL);
+        $this->log("Start Deleting ".self::$enittyName." by ID " . (int) $id);
+        if($this->getPdoDb() !== null){
+            $stmt = $this->getPdoDb()->prepare('DELETE FROM  ' . self::$table    . '
+                WHERE ' . self::$table_id . ' = ?')
+            ;
+            $res = $stmt->execute([(int) $id]);
+            $this->log("Result Deleting ".self::$enittyName." by ID: record deleted " . PHP_EOL);
+            return $res;
+        }
+        $this->log("Result Deleting ".self::$enittyName." by ID: false " . PHP_EOL);
+        $this->log("End Deleting ".self::$enittyName." by ID" . PHP_EOL);
+        return false;
     }
 
 
@@ -270,17 +334,32 @@ class Artist extends Model
      */
     private function getArrayOfAttributes(){
         $array = [];
-        $array["id"]          = $this->id;
-        $array["first_name"]  = $this->first_name;
-        $array["middle_name"] = $this->middle_name;
-        $array["last_name"]   = $this->last_name;
-        $array["description"] = $this->description;
-        $array["year_birth"]  = $this->year_birth;
-        $array["year_death"]  = $this->year_death;
-        $array["genres"]      = $this->genres;
-        $array["nationality"] = $this->nationality;
-        $array["image_title"] = $this->image_title;
-        $array["image"]       = $this->image;
+        $array["artist_id"]        = $this->artist_id;
+        $array["artist_fullName"]  = $this->artist_fullName;
+        $array["artist_lastName"]  = $this->artist_lastName;
+        $array["artist_born"]      = $this->artist_born;
+        $array["artist_died"]      = $this->artist_died;
+        $array["artist_origin"]    = $this->artist_origin;
+        $array["artist_influence"] = $this->artist_influence;
+        $array["artist_desc"]      = $this->artist_desc;
+        return $array;
+    }
+
+    /**
+     * Get all of the attributes in array for PDO Stmp
+     *
+     * @return array
+     */
+    private function getArrayOfAttributesForSTMT(){
+        $array = [];
+        $array["artist_id"]        = $this->getId();
+        $array["artist_fullName"]  = $this->getFullName();
+        $array["artist_lastName"]  = $this->getLastName();
+        $array["artist_born"]      = $this->getBorn();
+        $array["artist_died"]      = $this->getDied();
+        $array["artist_origin"]    = $this->getOrigin();
+        $array["artist_influence"] = $this->getInfluence();
+        $array["artist_desc"]      = $this->getDescription();
         return $array;
     }
 
@@ -297,7 +376,7 @@ class Artist extends Model
      */
     public function getId()
     {
-        return $this->id;
+        return $this->artist_id;
     }
 
     /**
@@ -308,25 +387,12 @@ class Artist extends Model
      */
     public function setId($id)
     {
-        if($this->id != $id){
-            $this->id = $id;
-            $this->register_a_change("id");
+        if($this->artist_id != $id){
+            $this->artist_id = $id;
+            $this->register_a_change("artist_id");
             return true;
         }
         return false;
-    }
-
-    /**
-     * Get full name of artist
-     *
-     * @return string
-     */
-    public function getFullName()
-    {
-        $output = $this->first_name;
-        $output .= !empty($this->middle_name) ? ' ' . $this->middle_name : '';
-        $output .= !empty($this->last_name) ? ' ' . $this->last_name : '';
-        return $output;
     }
 
 
@@ -335,51 +401,35 @@ class Artist extends Model
      *
      * @return string
      */
-    public function getFirstName()
+    public function getFullName()
     {
-        return $this->first_name;
+        return $this->artist_fullName;
     }
 
     /**
-     * Set First Name
+     * Set Full Name
      *
-     * @param string $first_name
+     * @param string $artist_fullName
      * @return boolean
      */
-    public function setFirstName($first_name = '')
+    public function setFullName($artist_fullName = '')
     {
-        if($this->first_name != $first_name){
-            $this->first_name = $first_name;
-            $this->register_a_change("first_name");
+        if($this->artist_fullName != $artist_fullName){
+            $this->artist_fullName = $artist_fullName;
+            $this->register_a_change("artist_fullName");
             return true;
         }
         return false;
     }
 
     /**
-     * Get Middle Name
+     * Get First Name
      *
      * @return string
      */
-    public function getMiddleName()
+    public function getFirstName()
     {
-        return $this->middle_name;
-    }
-
-    /**
-     * Set Middle Name
-     *
-     * @param string $middle_name
-     * @return boolean
-     */
-    public function setMiddleName($middle_name = '')
-    {
-        if($this->middle_name != $middle_name){
-            $this->middle_name = $middle_name;
-            $this->register_a_change("middle_name");
-            return true;
-        }
-        return false;
+        return explode("_", $this->getFullName()[0]) ;
     }
 
     /**
@@ -389,20 +439,124 @@ class Artist extends Model
      */
     public function getLastName()
     {
-        return $this->last_name;
+        return $this->artist_lastName;
     }
 
     /**
      * Set Last Name
      *
-     * @param string $last_name
+     * @param string $artist_lastName
      * @return boolean
      */
-    public function setLastName($last_name = '')
+    public function setLastName($artist_lastName = '')
     {
-        if($this->last_name != $last_name){
-            $this->last_name = $last_name;
-            $this->register_a_change("last_name");
+        if($this->artist_lastName != $artist_lastName){
+            $this->artist_lastName = $artist_lastName;
+            $this->register_a_change("artist_lastName");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get year of birth
+     *
+     * @return integer
+     */
+    public function getBorn()
+    {
+        return $this->artist_born;
+    }
+
+    /**
+     * Set Year of birth
+     *
+     * @param integer $artist_born
+     * @return boolean
+     */
+    public function setBorn($artist_born)
+    {
+        if($this->artist_born != $artist_born){
+            $this->artist_born = $artist_born;
+            $this->register_a_change("artist_born");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get Year of death
+     *
+     * @return integer
+     */
+    public function getDied()
+    {
+        return $this->artist_died;
+    }
+
+    /**
+     * Set year of death
+     *
+     * @param integer $artist_died
+     * @return boolean
+     */
+    public function setDied($artist_died)
+    {
+        if($this->artist_died != $artist_died){
+            $this->artist_died = $artist_died;
+            $this->register_a_change("artist_died");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get artist_influence of artist
+     *
+     * @return string
+     */
+    public function getOrigin()
+    {
+        return $this->artist_origin;
+    }
+
+    /**
+     * Set artist_origin of artist
+     *
+     * @param string $artist_origin
+     * @return boolean
+     */
+    public function setOrigin($artist_origin)
+    {
+        if($this->artist_origin != $artist_origin){
+            $this->artist_origin = $artist_origin;
+            $this->register_a_change("artist_origin");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get artist_influence of artist
+     *
+     * @return string
+     */
+    public function getInfluence()
+    {
+        return $this->artist_influence;
+    }
+
+    /**
+     * Set artist_influence of artist
+     *
+     * @param string $artist_influence
+     * @return boolean
+     */
+    public function setInfluence($artist_influence)
+    {
+        if($this->artist_influence != $artist_influence){
+            $this->artist_influence = $artist_influence;
+            $this->register_a_change("artist_influence");
             return true;
         }
         return false;
@@ -415,176 +569,20 @@ class Artist extends Model
      */
     public function getDescription()
     {
-        return $this->description;
+        return $this->artist_desc;
     }
 
     /**
      * Set Description
      *
-     * @param string $description
+     * @param string $artist_desc
      * @return boolean
      */
-    public function setDescription($description = '')
+    public function setDescription($artist_desc = '')
     {
-        if($this->description != $description){
-            $this->description = $description;
-            $this->register_a_change("description");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get Genres
-     *
-     * @return string
-     */
-    public function getGenres()
-    {
-        return $this->genres;
-    }
-
-    /**
-     * Set Genres
-     *
-     * @param string $genres
-     * @return boolean
-     */
-    public function setGenres($genres = '')
-    {
-        if($this->genres != $genres){
-            $this->genres = $genres;
-            $this->register_a_change("genres");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get year of birth
-     *
-     * @return integer
-     */
-    public function getYearBirth()
-    {
-        return $this->year_birth;
-    }
-
-    /**
-     * Set Year of birth
-     *
-     * @param integer $year_birth
-     * @return boolean
-     */
-    public function setYearBirth($year_birth)
-    {
-        if($this->year_birth != $year_birth){
-            $this->year_birth = $year_birth;
-            $this->register_a_change("year_birth");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get Year of death
-     *
-     * @return integer
-     */
-    public function getYearDeath()
-    {
-        return $this->year_death;
-    }
-
-    /**
-     * Set year of death
-     *
-     * @param integer $year_death
-     * @return boolean
-     */
-    public function setYearDeath($year_death)
-    {
-        if($this->year_death != $year_death){
-            $this->year_death = $year_death;
-            $this->register_a_change("year_death");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get nationality of artist
-     *
-     * @return string
-     */
-    public function getNationality()
-    {
-        return $this->nationality;
-    }
-
-    /**
-     * Set nationality of artist
-     *
-     * @param string $nationality
-     * @return boolean
-     */
-    public function setNationality($nationality)
-    {
-        if($this->nationality != $nationality){
-            $this->nationality = $nationality;
-            $this->register_a_change("$nationality");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get path to image
-     *
-     * @return string
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * Set path to image
-     *
-     * @param string $image
-     * @return boolean
-     */
-    public function setImage($image)
-    {
-        if($this->image != $image){
-            $this->image = $image;
-            $this->register_a_change("image");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get image title
-     *
-     * @return string
-     */
-    public function getImageTitle()
-    {
-        return $this->image_title;
-    }
-
-    /**
-     * Set image Title
-     *
-     * @param string $image_title
-     * @return boolean
-     */
-    public function setImageTitle($image_title)
-    {
-        if($this->image_title != $image_title){
-            $this->image_title = $image_title;
-            $this->register_a_change("image_title");
+        if($this->artist_desc != $artist_desc){
+            $this->artist_desc = $artist_desc;
+            $this->register_a_change("artist_desc");
             return true;
         }
         return false;
