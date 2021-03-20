@@ -1,115 +1,134 @@
 <?php
+require_once 'config.php';
+require_once 'util.php';
+
 require_once 'Artist.php';
 require_once 'Artwork.php';
 require_once 'PageHome.php';
 require_once 'PageAboutUs.php';
 require_once 'PageAccount.php';
 require_once 'PageArtwork.php';
+require_once 'PageArtworks.php';
 require_once 'PageArtist.php';
+require_once 'PageArtists.php';
 require_once 'PageError.php';
+
+$pdo = connect_to_database();
 
 switch ($_GET['page']) {
 
   // Artwork page
   case 'artist':
 
-    $page = new PageArtist();
-
-    // create 3 instances of artists
-    $artists = [];
-    $artists[1] = new Artist(1);
-    $artists[2] = new Artist(2);
-    $artists[3] = new Artist(3);
-
-    // "test" update/delete/create and save functions
-    // "results" will be in the log
-    $artists[1]->setFirstName("Test First Name 123");
-    $artists[1]->setYearBirth(1100);
-    $artists[1]->setYearDeath(1200);
-    $artists[1]->save();
-
-    $artists[1]->deleteOneById(1);
-
-    $new_artist = new Artist();
-    $new_artist->setFirstName("Test Name");
-    $new_artist->setMiddleName("Test");
+    // test create
+    $new_artist = new Artist(null, $pdo);
+    $new_artist->setFullName("Test Name");
     $new_artist->setLastName("Test Last Name");
-    $new_artist->setNationality("Test Nationality");
-    $new_artist->setYearBirth(1000);
-    $new_artist->setYearDeath(2000);
-    $new_artist->setNationality("Test Nationality");
+    $new_artist->setBorn(1000);
+    $new_artist->setDied(2000);
+    $new_artist->setOrigin("Test Origin");
+    $new_artist->setInfluence("Test Influence");
     $new_artist->setDescription("Test Description");
-    $new_artist->setGenres("Test Genres");
-    $new_artist->setImageTitle("Test Image Title");
-    $new_artist->setImage("test.jpg");
-    $new_artist->create();
+    $insert_id = $new_artist->create();
 
-    // end tests, reload artwork 1
-    $artists[1] = new Artist(1);
+    // test update
+    if($insert_id > 0){
+      $upd_artist = new Artist($insert_id, $pdo);
 
-    // if id param is provided use it, otherwise use random of 1-3
-    $id = empty($_GET['id']) || (int) $_GET['id'] == 0 ? rand(1,3) : (int) $_GET['id'];
+      $upd_artist->setFullName("Test Name 2");
+      $upd_artist->setLastName("Test Last Name2");
+      $upd_artist->setBorn(1333);
+      $upd_artist->setDied(1777);
+      $upd_artist->setOrigin("Test Origin 2");
+      $upd_artist->setInfluence("Test Influence 2");
+      $upd_artist->setDescription("Test Description 2");
 
-    // set artist for the page
-    if(isset($artists[$id])){
-      $page->setArtist($artists[$id]);
-    } else {
-      $page = new PageError();
-      $page->setErrorMessage("Error. There are only 3 artists currently. ID: " . (int) $id . " is out of range of 3.");
+      $res = $upd_artist->save();
     }
 
+    // test delete
+    $is_del = $new_artist->deleteOneById($insert_id);
+    // end tests
 
+
+    // if id param is provided use it, otherwise use random of 1-3
+    $artist_id = ! empty($_GET['id']) ? (int) $_GET['id'] : 0;
+
+    if($artist_id > 0){
+      // Artist Selected
+      $artist = new Artist($artist_id, $pdo);
+      $artist->loadData($artist_id);
+
+      // set artist for the page
+      if(isset($artist)){
+        $page = new PageArtist();
+        $page->setArtist($artist);
+      } else {
+        $page = new PageError();
+        $page->setErrorMessage("Error. There are only 3 artists currently. ID: " . (int) $id . " is out of range of 3.");
+      }
+    } else{
+      // List of Artists
+      $artists = Artist::getAll($pdo);
+
+      $page = new PageArtists();
+      $page->setArtists($artists);
+    }
     break;
+    // end artist
 
   // Artist Page
   case 'artwork':
-    $page = new PageArtwork();
 
-    // create 3 instances of artworks
-    $artworks = [];
-    $artworks[1] = new Artwork(1);
-    $artworks[2] = new Artwork(2);
-    $artworks[3] = new Artwork(3);
+    // test create
+    $new_artwork = new Artwork(null, $pdo);
+    $new_artwork->setArtworkArtist(1);
+    $new_artwork->setArtworkName("Test Name");
+    $new_artwork->setArtworkReprintPrice(100);
+    $new_artwork->setArtworkLoc(1);
+    $new_artwork->setArtworkDescription("Test Description");
+    $insert_id = $new_artwork->create();
 
-    // "test" update/delete/create and save functions
-    // "results" will be in the log
-    $artworks[1]->setTitle("Test Title");
-    $artworks[1]->setHeight(300);
-    $artworks[1]->save();
+    // test update
+    if($insert_id > 0){
+      $upd_artwork = new Artwork($insert_id, $pdo);
+      $upd_artwork->setArtworkArtist(2);
+      $upd_artwork->setArtworkName("Test Name 2");
+      $upd_artwork->setArtworkReprintPrice(200);
+      $upd_artwork->setArtworkLoc(2);
+      $upd_artwork->setArtworkDescription("Test Description 2");
 
-    $artworks[1]->deleteOneById(1);
-
-    $new_artwork = new Artwork();
-    $new_artwork->setTitle("Test Title");
-    $new_artwork->setArtistId(1);
-    $new_artwork->setDescription("Test Description");
-    $new_artwork->setSubjects("Test Subjects");
-    $new_artwork->setGenres("Test Genres");
-    $new_artwork->setMedium("Test Medium");
-    $new_artwork->setSimilarArtwork("Test Similar Artwork");
-    $new_artwork->setHome("Test Home");
-    $new_artwork->setWidth(100);
-    $new_artwork->setHeight(200);
-    $new_artwork->setPrice(777);
-    $new_artwork->setImage("test.jpg");
-    $new_artwork->create();
-
-    // end tests, reload artwork 1
-    $artworks[1] = new Artwork(1);
-
-
-    // if id param is provided use it, otherwise use random of 1-3
-    $id = empty($_GET['id']) || (int) $_GET['id'] == 0 ? rand(1,3) : (int) $_GET['id'];
-
-    // set artwork for the page
-    if(isset($artworks[$id])){
-      $page->setArtwork($artworks[$id]);
-    } else {
-      $page = new PageError();
-      $page->setErrorMessage("Error. There are only 3 artworks currently. ID: " . (int) $id . " is out of range of 3.");
+      $res = $upd_artwork->save();
     }
 
+    // test delete
+    $is_del = $new_artwork->deleteOneById($insert_id);
+    // end tests
+
+    // if id param is provided use it, otherwise use random of 1-3
+    $artwork_id = ! empty($_GET['id']) ? (int) $_GET['id'] : 0;
+
+    if($artwork_id > 0){
+      // Artist Selected
+      $artwork = new Artwork($artwork_id, $pdo);
+      $artwork->loadData($artwork_id);
+
+      // set artist for the page
+      if(isset($artwork)){
+        $page = new PageArtwork();
+        $page->setArtwork($artwork);
+      } else {
+        $page = new PageError();
+        $page->setErrorMessage("Error. Could not find Artwork. ID: " . (int) $id . " is out of range of 3.");
+      }
+    } else{
+      // List of Artworks
+      $artworks = Artwork::getAll($pdo);
+      $page = new PageArtworks();
+      $page->setArtworks($artworks);
+    }
     break;
+    // end of artworks
 
   // Account Page
   case 'account':
