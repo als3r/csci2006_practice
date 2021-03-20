@@ -236,3 +236,15 @@ nav.user a:hover {
   padding: 3px 6px;
   cursor: pointer;
 }
+
+/*
+    Artists
+    Artworks
+ */
+.artitst-list,
+.artwork-list
+{
+    list-style: none;
+    padding-left: 0px;
+    margin: 20px;
+}

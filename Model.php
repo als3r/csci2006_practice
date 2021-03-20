@@ -8,6 +8,8 @@ require_once 'Log.php';
  */
 abstract class Model
 {
+    private $pdo_db = null;
+
     /**
      * ID of the record
      *
@@ -85,12 +87,13 @@ abstract class Model
     public function save()
     {
         if ($this->getId() === null) {
-            $this->create($this->attributes);
+            return $this->create();
         } else {
             if ($this->is_modified()) {
-                $this->updateOneById($this->getId());
+                return $this->update();
             }
         }
+        return false;
     }
 
     /**
@@ -198,5 +201,21 @@ abstract class Model
             }
         }
         return $output;
+    }
+
+    /**
+     * @return null
+     */
+    public function getPdoDb()
+    {
+        return $this->pdo_db;
+    }
+
+    /**
+     * @param null $pdo_db
+     */
+    public function setPdoDb($pdo_db): void
+    {
+        $this->pdo_db = $pdo_db;
     }
 }

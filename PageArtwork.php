@@ -38,39 +38,39 @@ class PageArtwork extends Page
     function getMainArticleSection(){
         $html = '
   <article class="artwork">
-      <h2 class="art_title">'.$this->getArtwork()->getTitle().'</h2>
-       <p class="artist">By <a href="index.php?page=artist&id='.(int) $this->getArtwork()->getArtistid().'">'.$this->getArtwork()->getArtistName().'</a></p>
-      <figure><img width="458" src="artwork/medium/'.$this->getArtwork()->getImage().'" alt="Image of '.$this->getArtwork()->getTitle().'" title="'.$this->getArtwork()->getTitle().'"></figure>
-      <p>'.$this->getArtwork()->getDescription().'</p>
-      <p class="list_price">'.$this->getArtwork()->getPriceFormatted().'</p>
+      <h2 class="art_title">'.$this->getArtwork()->getArtworkName().'</h2>
+      <p class="artist">By <a href="index.php?page=artist&id='.(int) $this->getArtwork()->getArtworkArtist().'">'.$this->getArtwork()->getArtworkArtist().'</a></p>
+      <figure><img width="458" src="artwork/medium/'.$this->getArtwork()->getArtworkId().'.png" alt="Image of '.$this->getArtwork()->getArtworkName().'" title="'.$this->getArtwork()->getArtworkName().'"></figure>
+      <p>'.$this->getArtwork()->getArtworkDescription().'</p>
+      <p class="list_price">'.$this->getArtwork()->getArtworkReprintPrice().'</p>
       <div class="actions"><a href="#">Add to Wish List</a><a href="#">Add to Shopping Cart</a></div>
       <table class="artwork_info">
           <caption>Product Details</caption>
           <tbody>
-              <tr>
+              <!--<tr>
                   <td class="facet">Date:</td>
-                  <td class="value">'.$this->getArtwork()->getDate().'</td>
+                  <td class="value">'./*$this->getArtwork()->getDate().*/'</td>
               </tr>
               <tr>
                   <td class="facet">Medium:</td>
-                  <td class="value">'.$this->getArtwork()->getMedium().'</td>
+                  <td class="value">'./*$this->getArtwork()->getMedium().*/'</td>
               </tr>
               <tr>
                   <td class="facet">Dimension:</td>
-                  <td class="value">'.$this->getArtwork()->getWidth().'cm x '.$this->getArtwork()->getHeight().'cm</td>
+                  <td class="value">'./*$this->getArtwork()->getWidth().*/'cm x './*$this->getArtwork()->getHeight().*/'cm</td>
               </tr>
               <tr>
                   <td class="facet">Home:</td>
-                  <td class="value"><a href="#">'.$this->getArtwork()->getHome().'</a></td>
+                  <td class="value"><a href="#">'./*$this->getArtwork()->getHome().*/'</a></td>
               </tr>
               <tr>
                   <td class="facet">Genres:</td>
-                  <td class="value"><a href="#">'.$this->getArtwork()->getGenres().'</a></td>
+                  <td class="value"><a href="#">'./*$this->getArtwork()->getGenres().*/'</a></td>
               </tr>
               <tr>
                   <td class="facet">Subjects:</td>
-                  <td class="value"><a href="#">'.$this->getArtwork()->getSubjects().'</a></td>
-              </tr>
+                  <td class="value"><a href="#">'./*$this->getArtwork()->getSubjects().*/'</a></td>
+              </tr>-->
           </tbody>
       </table>
   </article>

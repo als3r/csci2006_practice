@@ -40,27 +40,27 @@ class PageArtist extends Page
         $html = '
   <article class="artwork">
       <h2 class="art_title">'.$this->getArtist()->getFullName().'</h2>
-      <p class="artist">'.$this->getArtist()->getImageTitle().'</p>
-      <figure><img width="458" src="artwork/medium/'.$this->getArtist()->getImage().'" alt="Image of '.$this->getArtist()->getImageTitle().'" title="'.$this->getArtist()->getImageTitle().'"></figure>
+      <p class="artist">'./*$this->getArtist()->getImageTitle().*/'</p>
+      <figure><img width="458" src="artwork/medium/1.png'./*$this->getArtist()->getImage().*/'" alt="Image of './*$this->getArtist()->getImageTitle().*/'" title="'./*$this->getArtist()->getImageTitle().*/'"></figure>
       <p>'.$this->getArtist()->getDescription().'</p>
       <table class="artwork_info">
           <caption>Artist Details</caption>
           <tbody>
               <tr>
                   <td class="facet">Birth Year:</td>
-                  <td class="value">'.$this->getArtist()->getYearDeath().'</td>
+                  <td class="value">'.$this->getArtist()->getBorn().'</td>
               </tr>
               <tr>
                   <td class="facet">Death Year:</td>
-                  <td class="value">'.$this->getArtist()->getYearDeath().'</td>
+                  <td class="value">'.$this->getArtist()->getDied().'</td>
               </tr>
               <tr>
-                  <td class="facet">Nationality:</td>
-                  <td class="value"><a href="#">'.$this->getArtist()->getNationality().'</a></td>
+                  <td class="facet">Origin:</td>
+                  <td class="value"><a href="#">'. $this->getArtist()->getOrigin().'</a></td>
               </tr>
               <tr>
-                  <td class="facet">Genres:</td>
-                  <td class="value"><a href="#">'.$this->getArtist()->getGenres().'</a></td>
+                  <td class="facet">Influence:</td>
+                  <td class="value"><a href="#">'.$this->getArtist()->getInfluence().'</a></td>
               </tr>
           </tbody>
       </table>
