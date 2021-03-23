@@ -1,6 +1,7 @@
 <?php
 require_once 'Page.php';
-require_once 'Artwork.php';
+require_once 'models/Artwork.php';
+
 class PageArtwork extends Page
 {
     public $title;
@@ -39,38 +40,24 @@ class PageArtwork extends Page
         $html = '
   <article class="artwork">
       <h2 class="art_title">'.$this->getArtwork()->getArtworkName().'</h2>
-      <p class="artist">By <a href="index.php?page=artist&id='.(int) $this->getArtwork()->getArtworkArtist().'">'.$this->getArtwork()->getArtworkArtist().'</a></p>
+      <p class="artist">By <a href="index.php?page=artist&id='.(int) $this->getArtwork()->getArtist()->getId().'">'.$this->getArtwork()->getArtist()->getFullName().'</a></p>
       <figure><img width="458" src="artwork/medium/'.$this->getArtwork()->getArtworkId().'.png" alt="Image of '.$this->getArtwork()->getArtworkName().'" title="'.$this->getArtwork()->getArtworkName().'"></figure>
       <p>'.$this->getArtwork()->getArtworkDescription().'</p>
-      <p class="list_price">'.$this->getArtwork()->getArtworkReprintPrice().'</p>
+      <p class="list_price">$'.number_format($this->getArtwork()->getArtworkReprintPrice(),2).'</p>
       <div class="actions"><a href="#">Add to Wish List</a><a href="#">Add to Shopping Cart</a></div>
       <table class="artwork_info">
           <caption>Product Details</caption>
           <tbody>
-              <!--<tr>
-                  <td class="facet">Date:</td>
-                  <td class="value">'./*$this->getArtwork()->getDate().*/'</td>
-              </tr>
-              <tr>
-                  <td class="facet">Medium:</td>
-                  <td class="value">'./*$this->getArtwork()->getMedium().*/'</td>
-              </tr>
-              <tr>
-                  <td class="facet">Dimension:</td>
-                  <td class="value">'./*$this->getArtwork()->getWidth().*/'cm x './*$this->getArtwork()->getHeight().*/'cm</td>
-              </tr>
-              <tr>
-                  <td class="facet">Home:</td>
-                  <td class="value"><a href="#">'./*$this->getArtwork()->getHome().*/'</a></td>
-              </tr>
-              <tr>
-                  <td class="facet">Genres:</td>
-                  <td class="value"><a href="#">'./*$this->getArtwork()->getGenres().*/'</a></td>
-              </tr>
-              <tr>
+             '.$this->getFacetsSection().'
+             '.$this->getLocationSection().'
+             <tr>
+                <td class="facet">Genres:</td>
+                <td class="value">'.$this->getGenresSection().'</td>
+             </tr>
+             <tr>
                   <td class="facet">Subjects:</td>
-                  <td class="value"><a href="#">'./*$this->getArtwork()->getSubjects().*/'</a></td>
-              </tr>-->
+                  <td class="value">'.$this->getSubjectsSection().'</td>
+              </tr>
           </tbody>
       </table>
   </article>
@@ -125,6 +112,96 @@ class PageArtwork extends Page
           <div class="actions"><a href="#">View</a><a href="#">Wish</a><a href="#">Cart</a></div>
       </div>
   </article>';
+        return $html;
+    }
+
+
+    /**
+     * Get contents of artwork facets;
+     */
+    function getFacetsSection(){
+
+        $html = '';
+        if(
+            $this->getArtwork()->getFacets() !== null &&
+            is_array($this->getArtwork()->getFacets()) &&
+            count($this->getArtwork()->getFacets())
+        ){
+            foreach ($this->getArtwork()->getFacets() as $k => $facet){
+                $html .= '<tr>';
+                $html .= '<td class="facet">'.$facet["key"].':</td>';
+                $html .= '<td class="value">'.$facet["value"].'</td>';
+                $html .= '</tr>';
+            }
+        } else {
+            $html .= '<tr>';
+            $html .= '<td class="facet">Facet:</td>';
+            $html .= '<td class="value">-</td>';
+            $html .= '</tr>';
+        }
+        return $html;
+    }
+
+    /**
+     * Get contents of artwork subjects;
+     */
+    function getGenresSection(){
+
+        $html = '';
+        if(
+            $this->getArtwork()->getGenres() !== null &&
+            is_array($this->getArtwork()->getGenres()) &&
+            count($this->getArtwork()->getGenres())
+        ){
+            foreach ($this->getArtwork()->getGenres() as $k => $genre){
+                $html .= '<a href="#">'.$genre["key"].'</a> ';
+            }
+        } else {
+            $html = 'Unknown';
+        }
+        return $html;
+    }
+
+    /**
+     * Get contents of artwork genres;
+     */
+    function getSubjectsSection(){
+
+        $html = '';
+        if(
+            $this->getArtwork()->getSubjects() !== null &&
+            is_array($this->getArtwork()->getSubjects()) &&
+            count($this->getArtwork()->getSubjects())
+        ){
+            foreach ($this->getArtwork()->getSubjects() as $k => $subject){
+                $html .= '<a href="#">'.$subject["key"].'</a> ';
+            }
+        } else {
+            $html = 'Unknown';
+        }
+        return $html;
+    }
+
+    /**
+     * Get contents of artwork location;
+     */
+    function getLocationSection(){
+
+        $html = '';
+        if(
+            $this->getArtwork()->getLocation() !== null &&
+            $this->getArtwork()->getLocation()->getLocName() !== null
+        ){
+            $html .= '<tr>';
+            $html .= '<td class="facet">Home:</td>';
+            $html .= '<td class="value">'.$this->getArtwork()->getLocation()->getLocName().'</td>';
+            $html .= '</tr>';
+        } else {
+            $html .= '<tr>';
+            $html .= '<td class="facet">Home:</td>';
+            $html .= '<td class="value">Unknown</td>';
+            $html .= '</tr>';
+        }
         return $html;
     }
 }

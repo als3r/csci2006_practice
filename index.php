@@ -1,17 +1,17 @@
 <?php
 require_once 'config.php';
-require_once 'util.php';
+require_once 'helpers/util.php';
 
-require_once 'Artist.php';
-require_once 'Artwork.php';
-require_once 'PageHome.php';
-require_once 'PageAboutUs.php';
-require_once 'PageAccount.php';
-require_once 'PageArtwork.php';
-require_once 'PageArtworks.php';
-require_once 'PageArtist.php';
-require_once 'PageArtists.php';
-require_once 'PageError.php';
+require_once 'models/Artist.php';
+require_once 'models/Artwork.php';
+require_once 'pages/PageHome.php';
+require_once 'pages/PageAboutUs.php';
+require_once 'pages/PageAccount.php';
+require_once 'pages/PageArtwork.php';
+require_once 'pages/PageArtworks.php';
+require_once 'pages/PageArtist.php';
+require_once 'pages/PageArtists.php';
+require_once 'pages/PageError.php';
 
 $pdo = connect_to_database();
 
@@ -112,6 +112,30 @@ switch ($_GET['page']) {
       // Artist Selected
       $artwork = new Artwork($artwork_id, $pdo);
       $artwork->loadData($artwork_id);
+
+      $artwork->loadFacets();
+      $artwork->loadSubjects();
+      $artwork->loadGenres();
+      $artwork->loadLocation();
+      $artwork->loadArtist();
+
+      $facets   = $artwork->getFacets();
+      $subjects = $artwork->getSubjects();
+      $genres   = $artwork->getGenres();
+      $location = $artwork->getLocation();
+      $artist   = $artwork->getArtist();
+
+//      echo '<pre>';
+//      var_dump($facets);
+//      var_dump($subjects);
+//      var_dump($genres);
+//      var_dump($location);
+//      echo '</pre>';
+//      die('test');
+
+
+
+//      $artwork->loadLocation();
 
       // set artist for the page
       if(isset($artwork)){

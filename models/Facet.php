@@ -2,75 +2,48 @@
 require_once 'Model.php';
 
 /**
- * Class Artwork
+ * Class Facet
  * Extends Model
  *
- * Handles interactions with a record of the artwork
+ * Handles interactions with a record of the artist
  */
-class Artwork extends Model
+class Facet extends Model
 {
-
-    static $enittyName = "Artwork";
-    static $table      = "Artwork";
-    static $table_id   = "artwork_id";
+    static $enittyName = "Facet";
+    static $table      = "Facet";
+    static $table_id   = "facet_artwork";
 
     /**
-     * ID of the artwork
+     * Artist ID of the artwork
      * @var integer
      */
-    public $artwork_id;
+    private $facet_artwork;
 
     /**
-     * Artist
-     * @var Artist
-     */
-    public $artwork_artist;
-
-    /**
-     * Artwork Title
+     * Artist Facet Key
      * @var string
      */
-    public $artwork_name;
+    private $facet_key;
 
-    /**
-     * Id of the location
-     * @var integer
-     */
-    public $artwork_loc;
-
-    /**
-     * Artwork Description
+    /*
+     * Facet Value
      * @var string
      */
-    public $artwork_desc;
+    private $facet_value;
 
-    /**
-     * Price of the Artwork
-     * @var float
-     */
-    public $artwork_reprintPrice;
-
-
-    // Data Set
-    public $data = [
-
-    ];
 
     // Default Data for a record
-    public const DEFAULT_DATA = [
-        "id" => null,
-        "artist_id" => 0,
-        "artwork_name" => "",
-        "artwork_loc" => 0,
-        "artwork_reprintPrice" => 0,
-        "artwork_desc" => "",
+    private const DEFAULT_DATA = [
+        "facet_artwork"  => null,
+        "facet_key"   => "",
+        "facet_value" => "",
     ];
 
 
     /**
-     * Artwork constructor.
+     * Artist constructor.
      *
-     *  Loads artwork record by id
+     * Loads artist record by id
      *
      * @param $id
      */
@@ -86,6 +59,7 @@ class Artwork extends Model
 
     /**
      * Load data into model
+     *
      * @param int $id
      * @return bool
      */
@@ -98,19 +72,13 @@ class Artwork extends Model
         }
 
         if( isset(
-            $arr["artwork_id"],
-            $arr["artwork_artist"],
-            $arr["artwork_name"],
-            $arr["artwork_loc"],
-            $arr["artwork_reprintPrice"],
-            $arr["artwork_desc"]
+                $arr["facet_artwork"],
+                $arr["facet_key"],
+                $arr["facet_value"]
         )) {
-            $this->setArtworkId($arr["artwork_id"]);
-            $this->setArtworkArtist($arr["artwork_artist"]);
-            $this->setArtworkName($arr["artwork_name"]);
-            $this->setArtworkLoc($arr["artwork_loc"]);
-            $this->setArtworkReprintPrice($arr["artwork_reprintPrice"]);
-            $this->setArtworkDescription($arr["artwork_desc"]);
+            $this->setFacetArtwork( $arr["facet_artwork"] );
+            $this->setFacetKey(     $arr["facet_key"]     );
+            $this->setFacetValue(   $arr["facet_value"]   );
         }
         $this->log("Retrieved Object: (type: Artist, id: ".(int) $id.")" . $this->toString());
         return true;
@@ -118,7 +86,7 @@ class Artwork extends Model
 
 
     /**
-     * Get a record (array) from Data array (data set) By ID
+     * Get a record (array) from Data array By ID
      *
      * @param int $id
      * @return array
@@ -135,23 +103,23 @@ class Artwork extends Model
 
 
     /**
-     * Get id => full name pairs for all Artists
+     * Get key => value pairs for all Facets
      *
      * @param $pdo
      * @return mixed
      */
-    public static function getAll($pdo){
+    public static function getAll($pdo, $facetArtwork = null){
 
-        $stmt = $pdo->prepare('SELECT artwork_id as id, artwork_name as name
-                FROM  ' . self::$table)
-        ;
+        $stmt = $pdo->prepare("SELECT facet_key as 'key', facet_value as 'value'
+                FROM  " . self::$table . " WHERE facet_artwork = " . (int) $facetArtwork
+        );
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
     /**
-     * Create a record of artowrk
+     * Create a record of artist
      *
      * @return mixed|void
      */
@@ -161,20 +129,14 @@ class Artwork extends Model
         if($this->getPdoDb() !== null){
             $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
                 (
-                    artwork_id,
-                    artwork_artist,
-                    artwork_name,
-                    artwork_loc,
-                    artwork_reprintPrice,
-                    artwork_desc
+                    facet_artwork,
+                    facet_key, 
+                    facet_value,
                 )
                 VALUES(
-                    :artwork_id,
-                    :artwork_artist,
-                    :artwork_name,
-                    :artwork_loc,
-                    :artwork_reprintPrice,
-                    :artwork_desc
+                    :facet_artwork,
+                    :facet_key,
+                    :facet_value,
                 )
             ');
             $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
@@ -196,7 +158,7 @@ class Artwork extends Model
      * @param $id
      * @return mixed|void
      */
-    public function retrieveOneById($id)
+    public function retrieveOneById($id = 0)
     {
         $this->log("Start Retireiving ".self::$enittyName." by ID " . (int) $id);
         if($this->getPdoDb() !== null){
@@ -221,7 +183,7 @@ class Artwork extends Model
      * @return false|mixed|void
      */
     public function update(){
-        if($this->getArtworkId() !== null){
+        if($this->getId() !== null){
 
             $values = $this->getArrayOfAttributes();
 
@@ -236,7 +198,7 @@ class Artwork extends Model
                 unset($attributes_changed_array[self::$table_id]);
             }
 
-            return $this->updateOneById($this->getArtworkId(), $attributes_changed_array);
+            return $this->updateOneById($this->getId(), $attributes_changed_array);
         }
         return false;
     }
@@ -309,6 +271,7 @@ class Artwork extends Model
         return false;
     }
 
+
     /**
      * Get all of the attributes in array
      *
@@ -316,12 +279,9 @@ class Artwork extends Model
      */
     private function getArrayOfAttributes(){
         $array = [];
-        $array["artwork_id"]           = $this->getArtworkId();
-        $array["artwork_artist"]       = $this->getArtworkArtist();
-        $array["artwork_name"]         = $this->getArtworkName();
-        $array["artwork_loc"]          = $this->getArtworkLoc();
-        $array["artwork_reprintPrice"] = $this->getArtworkReprintPrice();
-        $array["artwork_desc"]         = $this->getArtworkDescription();
+        $array["facet_artwork"] = $this->facet_artwork;
+        $array["facet_key"]     = $this->facet_key;
+        $array["facet_value"]   = $this->facet_value;
         return $array;
     }
 
@@ -332,12 +292,9 @@ class Artwork extends Model
      */
     private function getArrayOfAttributesForSTMT(){
         $array = [];
-        $array[":artwork_id"]           = $this->getArtworkId();
-        $array[":artwork_artist"]       = $this->getArtworkArtist();
-        $array[":artwork_name"]         = $this->getArtworkName();
-        $array[":artwork_loc"]          = $this->getArtworkLoc();
-        $array[":artwork_reprintPrice"] = $this->getArtworkReprintPrice();
-        $array[":artwork_desc"]         = $this->getArtworkDescription();
+        $array[":facet_artwork"] = $this->getId();
+        $array[":facet_key"]     = $this->getFacetKey();
+        $array[":facet_value"]   = $this->getFavetValue();
         return $array;
     }
 
@@ -346,126 +303,55 @@ class Artwork extends Model
      * Getters and Setters
      */
 
-    /**
-     * Get ID
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->getArtworkId();
-    }
-
-    /**
-     * Set id of the record
-     *
-     * @param integer artwork_id
-     * @return boolean
-     */
-    public function setId($artwork_id)
-    {
-        return $this->setArtworkId($artwork_id);
-    }
 
     /**
      * Get ID
      *
      * @return integer
      */
-    public function getArtworkId()
+    public function getFacetArtwork()
     {
-        return $this->artwork_id;
+        return $this->facet_artwork;
     }
 
     /**
      * Set id of the record
      *
-     * @param integer artwork_id
+     * @param integer $id
      * @return boolean
      */
-    public function setArtworkId($artwork_id)
+    public function setFacetArtwork($id)
     {
-        if($this->artwork_id != $artwork_id){
-            $this->artwork_id = $artwork_id;
-            $this->register_a_change("id");
+        if($this->facet_artwork != $id){
+            $this->facet_artwork = $id;
+            $this->register_a_change("facet_artwork");
             return true;
         }
         return false;
     }
 
-    /**
-     * Get artwork artist for artwork
-     *
-     * @return integer
-     */
-    public function getArtworkArtist()
-    {
-        return $this->artwork_artist;
-    }
 
     /**
-     * Set artwork artist
-     *
-     * @param integer $artwork_artist
-     * @return boolean
-     */
-    public function setArtworkArtist($artwork_artist)
-    {
-        if($this->artwork_artist != $artwork_artist){
-            $this->artwork_artist = $artwork_artist;
-            $this->register_a_change("artwork_artist");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get artwork name
-     *
-     * @return mixed
-     */
-    public function getArtworkName()
-    {
-        return $this->artwork_name;
-    }
-
-    /**
-     * Set artwork name
-     *
-     * @param string $artwork_name
-     * @return boolean
-     */
-    public function setArtworkName($artwork_name)
-    {
-        if($this->artwork_name != $artwork_name){
-            $this->artwork_name = $artwork_name;
-            $this->register_a_change("artwork_name");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get artwork artwork_loc
+     * Get Facet Key
      *
      * @return string
      */
-    public function getArtworkLoc()
+    public function getFacetKey()
     {
-        return $this->artwork_loc;
+        return $this->facet_key;
     }
 
     /**
-     * Set artwork artwork_loc
+     * Set Facet Key
      *
-     * @param string $artwork_loc
+     * @param string $facet_key
      * @return boolean
      */
-    public function setArtworkLoc($artwork_loc)
+    public function setFacetKey($facet_key = '')
     {
-        if($this->artwork_loc != $artwork_loc){
-            $this->artwork_loc = $artwork_loc;
-            $this->register_a_change("artwork_loc");
+        if($this->facet_key != $facet_key){
+            $this->facet_key = $facet_key;
+            $this->register_a_change("facet_key");
             return true;
         }
         return false;
@@ -473,51 +359,26 @@ class Artwork extends Model
 
 
     /**
-     * Get artwork artwork_desc
+     * Get Facet Value
      *
      * @return string
      */
-    public function getArtworkDescription()
+    public function getFacetValue()
     {
-        return $this->artwork_desc;
+        return $this->facet_value;
     }
 
     /**
-     * Set artwork artwork_desc
+     * Set Facet Value
      *
-     * @param string $artwork_desc
+     * @param string $facet_value
      * @return boolean
      */
-    public function setArtworkDescription($artwork_desc)
+    public function setFacetValue($facet_value = '')
     {
-        if($this->artwork_desc != $artwork_desc){
-            $this->artwork_desc = $artwork_desc;
-            $this->register_a_change("artwork_desc");
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get price for artwork
-     *
-     * @return float
-     */
-    public function getArtworkReprintPrice()
-    {
-        return $this->artwork_reprintPrice;
-    }
-
-    /**
-     * Set Price for artwork
-     *
-     * @param float $artwork_reprintPrice
-     */
-    public function setArtworkReprintPrice($artwork_reprintPrice)
-    {
-        if($this->artwork_reprintPrice != $artwork_reprintPrice){
-            $this->artwork_reprintPrice = $artwork_reprintPrice;
-            $this->register_a_change("artwork_reprintPrice");
+        if($this->facet_value != $facet_value){
+            $this->facet_value = $facet_value;
+            $this->register_a_change("facet_value");
             return true;
         }
         return false;
