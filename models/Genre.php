@@ -20,13 +20,13 @@ class Genre extends Model
     private $genre_id;
 
     /**
-     * Artist Genre Name
+     * Genre Name
      * @var string
      */
     private $genre_name;
 
     /**
-     * Artist Genre Description
+     * Genre Description
      * @var string
      */
     private $genre_desc;
@@ -40,9 +40,9 @@ class Genre extends Model
 
 
     /**
-     * Artist constructor.
+     * Genre constructor.
      *
-     * Loads artist record by id
+     * Loads genre record by id
      *
      * @param $id
      */
@@ -132,13 +132,13 @@ class Genre extends Model
             $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
                 (
                     genre_id,
-                    genre_name, 
-                    facet_value,
+                    genre_name,
+                    facet_value
                 )
                 VALUES(
                     :genre_id,
                     :genre_name,
-                    :facet_value,
+                    :facet_value
                 )
             ');
             $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
@@ -233,7 +233,7 @@ class Genre extends Model
 
             $sql = 'UPDATE ' . self::$table    . ' SET
                     '.$update_columns .'
-                WHERE '.self::$table_id.' = :'.self::$table_id.' 
+                WHERE '.self::$table_id.' = :'.self::$table_id.'
             ';
 
             $stmt = $this->getPdoDb()->prepare($sql);

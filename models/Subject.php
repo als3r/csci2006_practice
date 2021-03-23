@@ -5,7 +5,7 @@ require_once 'Model.php';
  * Class Subject
  * Extends Model
  *
- * Handles interactions with a record of the artist
+ * Handles interactions with a record of the subject
  */
 class Subject extends Model
 {
@@ -20,7 +20,7 @@ class Subject extends Model
     private $subject_id;
 
     /**
-     * Artist Subject Name
+     * Subject Name
      * @var string
      */
     private $subject_name;
@@ -34,9 +34,9 @@ class Subject extends Model
 
 
     /**
-     * Artist constructor.
+     * constructor.
      *
-     * Loads artist record by id
+     * Loads Subject record by id
      *
      * @param $id
      */
@@ -71,7 +71,7 @@ class Subject extends Model
             $this->setSubjectId( $arr["subject_id"] );
             $this->setSubjectName(     $arr["subject_name"]     );
         }
-        $this->log("Retrieved Object: (type: Artist, id: ".(int) $id.")" . $this->toString());
+        $this->log("Retrieved Object: (type: Subject, id: ".(int) $id.")" . $this->toString());
         return true;
     }
 
@@ -113,7 +113,7 @@ class Subject extends Model
 
 
     /**
-     * Create a record of artist
+     * Create a record of Subject
      *
      * @return mixed|void
      */
@@ -124,13 +124,11 @@ class Subject extends Model
             $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
                 (
                     subject_id,
-                    subject_name, 
-                    facet_value,
+                    subject_name
                 )
                 VALUES(
                     :subject_id,
-                    :subject_name,
-                    :facet_value,
+                    :subject_name
                 )
             ');
             $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
@@ -225,7 +223,7 @@ class Subject extends Model
 
             $sql = 'UPDATE ' . self::$table    . ' SET
                     '.$update_columns .'
-                WHERE '.self::$table_id.' = :'.self::$table_id.' 
+                WHERE '.self::$table_id.' = :'.self::$table_id.'
             ';
 
             $stmt = $this->getPdoDb()->prepare($sql);

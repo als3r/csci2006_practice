@@ -4,7 +4,7 @@ require_once 'Model.php';
 /**
  * Class Location  * Extends Model
  *
- * Handles interactions with a record of the artist
+ * Handles interactions with a record of the location
  */
 class Location extends Model
 {
@@ -19,23 +19,30 @@ class Location extends Model
     private $loc_id;
 
     /**
-     * Artist Location Name
+     * Location Name
      * @var string
      */
     private $loc_name;
+
+    /**
+     * Location Description
+     * @var string
+     */
+    private $loc_desc;
 
 
     // Default Data for a record
     private const DEFAULT_DATA = [
         "loc_id"   => null,
         "loc_name" => "",
+        "loc_desc" => "",
     ];
 
 
     /**
      * Location constructor.
      *
-     * Loads artist record by id
+     * Loads Location record by id
      *
      * @param $id
      */
@@ -65,12 +72,14 @@ class Location extends Model
 
         if( isset(
                 $arr["loc_id"],
-                $arr["loc_name"]
+                $arr["loc_name"],
+                $arr["loc_desc"]
         )) {
-            $this->setLocId( $arr["loc_id"] );
-            $this->setLocName(     $arr["loc_name"]     );
+            $this->setLocId(          $arr["loc_id"]   );
+            $this->setLocName(        $arr["loc_name"] );
+            $this->setLocDescription( $arr["loc_desc"] );
         }
-        $this->log("Retrieved Object: (type: Artist, id: ".(int) $id.")" . $this->toString());
+        $this->log("Retrieved Object: (type: Location, id: ".(int) $id.")" . $this->toString());
         return true;
     }
 
@@ -110,7 +119,7 @@ class Location extends Model
 
 
     /**
-     * Create a record of artist
+     * Create a record of Location
      *
      * @return mixed|void
      */
@@ -121,13 +130,13 @@ class Location extends Model
             $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
                 (
                     loc_id,
-                    loc_name, 
-                    loc_desc,
+                    loc_name,
+                    loc_desc
                 )
                 VALUES(
                     :loc_id,
                     :loc_name,
-                    :loc_desc,
+                    :loc_desc
                 )
             ');
             $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
@@ -222,7 +231,7 @@ class Location extends Model
 
             $sql = 'UPDATE ' . self::$table    . ' SET
                     '.$update_columns .'
-                WHERE '.self::$table_id.' = :'.self::$table_id.' 
+                WHERE '.self::$table_id.' = :'.self::$table_id.'
             ';
 
             $stmt = $this->getPdoDb()->prepare($sql);
