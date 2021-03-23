@@ -2,7 +2,7 @@
 require_once 'Model.php';
 
 /**
- * Class Facet
+ * Class Artwork Facet
  * Extends Model
  *
  * Handles interactions with a record of the artist
@@ -130,13 +130,13 @@ class Facet extends Model
             $stmt = $this->getPdoDb()->prepare('INSERT INTO ' . self::$table    . '
                 (
                     facet_artwork,
-                    facet_key, 
-                    facet_value,
+                    facet_key,
+                    facet_value
                 )
                 VALUES(
                     :facet_artwork,
                     :facet_key,
-                    :facet_value,
+                    :facet_value
                 )
             ');
             $res = $stmt->execute($this->getArrayOfAttributesForSTMT());
@@ -231,7 +231,7 @@ class Facet extends Model
 
             $sql = 'UPDATE ' . self::$table    . ' SET
                     '.$update_columns .'
-                WHERE '.self::$table_id.' = :'.self::$table_id.' 
+                WHERE '.self::$table_id.' = :'.self::$table_id.'
             ';
 
             $stmt = $this->getPdoDb()->prepare($sql);
