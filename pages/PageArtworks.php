@@ -1,6 +1,7 @@
 <?php
 require_once 'Page.php';
-require_once 'Artwork.php';
+require_once 'models\Artwork.php';
+
 class PageArtworks extends Page
 {
     public $title = 'Artworks';

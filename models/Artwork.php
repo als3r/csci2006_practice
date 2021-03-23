@@ -1,5 +1,9 @@
 <?php
 require_once 'Model.php';
+require_once 'Facet.php';
+require_once 'Subject.php';
+require_once 'Genre.php';
+require_once 'Location.php';
 
 /**
  * Class Artwork
@@ -49,6 +53,40 @@ class Artwork extends Model
      * @var float
      */
     public $artwork_reprintPrice;
+
+
+    /**
+     * Facets
+     * @var array
+     */
+    public $facets = [];
+
+    /**
+     * Genres
+     * @var array
+     */
+    public $genres = [];
+
+    /**
+     * Subjects
+     * @var array
+     */
+    public $subjects = [];
+
+
+    /**
+     * Location
+     * @var array
+     */
+    public $location = null;
+
+
+    /**
+     * Artist
+     * @var array
+     */
+    public $artist = null;
+
 
 
     // Data Set
@@ -114,6 +152,87 @@ class Artwork extends Model
         }
         $this->log("Retrieved Object: (type: Artist, id: ".(int) $id.")" . $this->toString());
         return true;
+    }
+
+
+    /**
+     * 'Loads' Artwork Facets
+     */
+    public function loadFacets(){
+        if($this->getId() !== null){
+            $this->facets = Facet::getAll($this->getPdoDb(), $this->getId());
+        }
+    }
+
+    /**
+     * 'Loads' Artwork Facets
+     */
+    public function loadSubjects(){
+        if($this->getId() !== null){
+            $this->subects = Subject::getAll($this->getPdoDb(), $this->getId());
+        }
+    }
+
+    /**
+     * 'Loads' Artwork Facets
+     */
+    public function loadGenres(){
+        if($this->getId() !== null){
+            $this->genres = Genre::getAll($this->getPdoDb(), $this->getId());
+        }
+    }
+
+    /**
+     * 'Loads' Artwork Location
+     */
+    public function loadLocation(){
+        if($this->getArtworkLoc() !== null){
+            $this->location = new Location($this->getArtworkLoc(), $this->getPdoDb());
+        }
+    }
+
+    /**
+     * 'Loads' Artist
+     */
+    public function loadArtist(){
+        if($this->getArtworkArtist() !== null){
+            $this->artist = new Artist($this->getArtworkArtist(), $this->getPdoDb());
+        }
+    }
+
+    /**
+     * Returns Facets loaded in the model
+     */
+    public function getFacets(){
+        return $this->facets;
+    }
+
+    /**
+     * Returns Facets loaded in the model
+     */
+    public function getSubjects(){
+        return $this->subects;
+    }
+
+    /**
+     * Returns Facets loaded in the model
+     */
+    public function getGenres(){
+        return $this->genres;
+    }
+
+    /**
+     * Returns Location loaded in the model
+     */
+    public function getLocation(){
+        return $this->location;
+    }
+
+    /**
+     * Returns Artist loaded in the model
+     */
+    public function getArtist(){
+        return $this->artist;
     }
 
 

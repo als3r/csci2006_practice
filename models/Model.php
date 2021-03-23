@@ -1,5 +1,5 @@
 <?php
-require_once 'Log.php';
+require_once 'helpers/Log.php';
 
 /**
  * Class Model

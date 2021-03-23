@@ -1,6 +1,6 @@
 <?php
 require_once 'Page.php';
-require_once 'Artist.php';
+require_once 'models/Artist.php';
 
 class PageArtist extends Page
 {
