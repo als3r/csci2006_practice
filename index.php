@@ -12,6 +12,9 @@ require_once 'pages/PageArtworks.php';
 require_once 'pages/PageArtist.php';
 require_once 'pages/PageArtists.php';
 require_once 'pages/PageError.php';
+require_once 'pages/PageLogin.php';
+
+session_start();
 
 $pdo = connect_to_database();
 
@@ -162,6 +165,127 @@ switch ($_GET['page']) {
   // About Us Page
   case 'about-us':
     $page = new PageAboutUs();
+    break;
+
+  // Login Page
+  case 'login':
+
+    if(Page::isLoggedIn()){
+      header("Location: index.php");
+      exit;
+    }
+
+
+    // Login action
+    if(!empty($_POST) ){
+
+      if(
+        !empty($_POST['username']) &&
+        !empty($_POST['password'])
+      ){
+
+        $stmt = $pdo->prepare("SELECT * FROM Customer WHERE customer_username = :username AND customer_passhash = :password");
+
+        $stmt->execute([
+          "username" => $_POST['username'],
+          "password" => md5($_POST['username'].'SECRET'.$_POST['password'])
+        ]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(isset($user["customer_id"], $user["customer_fullName"])){
+          $_SESSION["is_logged_in"] = true;
+          $_SESSION["user"] = [];
+          $_SESSION["user"]["customer_fullName"] = $user["customer_fullName"];
+          $_SESSION["user"]["customer_id"]       = $user["customer_id"];
+        }
+
+        header("Location: index.php?page=account");
+        exit;
+      }
+    }
+
+    $page = new PageLogin();
+    break;
+
+  // Registration Action
+  case 'registration':
+
+    // Login action
+    if(!empty($_POST) ){
+
+      if(
+        !empty($_POST['username']) &&
+        !empty($_POST['password']) &&
+        !empty($_POST['address']) &&
+        !empty($_POST['fullname'])
+      ){
+
+
+        $stmt = $pdo->prepare("SELECT * FROM Customer WHERE customer_username = :username");
+        $stmt->execute([
+          "username" => $_POST['username'],
+        ]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($user){
+          $message = "User already exist";
+          $page = new PageLogin();
+          $page->setMessage($message);
+          $page->displayPage();
+          exit;
+        }
+
+
+        $stmt_insert = $pdo->prepare("
+          INSERT INTO Customer
+          (customer_username, customer_passhash, customer_fullName, customer_addr)
+          VALUES (:customer_username, :customer_passhash, :customer_fullName, :customer_addr)
+        ");
+
+        $res = $stmt_insert->execute([
+          ":customer_username" => $_POST['username'],
+          ":customer_passhash" => md5($_POST['username'].'SECRET'.$_POST['password']),
+          ":customer_fullName" => $_POST['fullname'],
+          ":customer_addr"    => $_POST['address'],
+        ]);
+
+        if($res){
+          $stmt = $pdo->prepare("SELECT * FROM Customer WHERE customer_username = :username AND customer_passhash = :password");
+
+          $stmt->execute([
+            "username" => $_POST['username'],
+            "password" => md5($_POST['username'].'SECRET'.$_POST['password'])
+          ]);
+          $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+          if(isset($user["customer_id"], $user["customer_fullName"])){
+            $_SESSION["is_logged_in"] = true;
+            $_SESSION["user"] = [];
+            $_SESSION["user"]["customer_fullName"] = $user["customer_fullName"];
+            $_SESSION["user"]["customer_id"]       = $user["customer_id"];
+          }
+
+          header("Location: index.php?page=account");
+          exit;
+        }
+
+        $page = new PageLogin();
+        $page->setMessage($message);
+        break;
+      }
+    }
+
+    break;
+
+
+  // Logout Action
+  case 'logout':
+
+    unset($_SESSION["is_logged_in"]);
+    unset($_SESSION["user"]);
+    header("Location: index.php");
+    exit;
+
     break;
 
   // Homepage
