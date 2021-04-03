@@ -44,7 +44,7 @@ class PageArtwork extends Page
       <figure><img width="458" src="artwork/medium/'.$this->getArtwork()->getArtworkId().'.png" alt="Image of '.$this->getArtwork()->getArtworkName().'" title="'.$this->getArtwork()->getArtworkName().'"></figure>
       <p>'.$this->getArtwork()->getArtworkDescription().'</p>
       <p class="list_price">$'.number_format($this->getArtwork()->getArtworkReprintPrice(),2).'</p>
-      <div class="actions"><a href="#">Add to Wish List</a><a href="#">Add to Shopping Cart</a></div>
+      <div class="actions">'.(self::isLoggedIn() ? '<a href="#">Add to Wish List</a>': '').'<a href="#">Add to Shopping Cart</a></div>
       <table class="artwork_info">
           <caption>Product Details</caption>
           <tbody>
@@ -77,7 +77,7 @@ class PageArtwork extends Page
                   <p><a href="#293">Still Life with Flowers in a Glass Vase</a></p>
               </figcaption>
           </figure>
-          <div class="actions"><a href="#">View</a><a href="#">Wish</a><a href="#">Cart</a></div>
+          <div class="actions"><a href="#">View</a>'.(self::isLoggedIn() ? '<a href="#">Wish</a>' : '').'<a href="#">Cart</a></div>
       </div>
       <div class="relatedArt">
           <figure><img src="artwork/small/183.jpg" alt="Portrait of Alida Christina Assink" title="Portrait of Alida Christina Assink">
@@ -85,7 +85,7 @@ class PageArtwork extends Page
                   <p><a href="#183">Portrait of Alida Christina Assink</a></p>
               </figcaption>
           </figure>
-          <div class="actions"><a href="#">View</a><a href="#">Wish</a><a href="#">Cart</a></div>
+          <div class="actions"><a href="#">View</a>'.(self::isLoggedIn() ? '<a href="#">Wish</a>' : '').'<a href="#">Cart</a></div>
       </div>
       <div class="relatedArt">
           <figure><img src="artwork/small/820.jpg" alt="Self-portrait" title="Self-portrait">
@@ -93,7 +93,7 @@ class PageArtwork extends Page
                   <p><a href="#820">Self-portrait</a></p>
               </figcaption>
           </figure>
-          <div class="actions"><a href="#">View</a><a href="#">Wish</a><a href="#">Cart</a></div>
+          <div class="actions"><a href="#">View</a>'.(self::isLoggedIn() ? '<a href="#">Wish</a>' : '').'<a href="#">Cart</a></div>
       </div>
       <div class="relatedArt">
           <figure><img src="artwork/small/374.jpg" alt="William II, Prince of Orange, and his Bride, Mary Stuart" title="William II, Prince of Orange, and his Bride, Mary Stuart">
@@ -101,7 +101,7 @@ class PageArtwork extends Page
                   <p><a href="#374">William II, Prince of Orange, and his Bride, Mary Stuart</a></p>
               </figcaption>
           </figure>
-          <div class="actions"><a href="#">View</a><a href="#">Wish</a><a href="#">Cart</a></div>
+          <div class="actions"><a href="#">View</a>'.(self::isLoggedIn() ? '<a href="#">Wish</a>' : '').'<a href="#">Cart</a></div>
       </div>
       <div class="relatedArt">
           <figure><img src="artwork/small/849.jpg" alt="Milkmaid" title="Milkmaid">
@@ -109,7 +109,7 @@ class PageArtwork extends Page
                   <p><a href="#849">Milkmaid</a></p>
               </figcaption>
           </figure>
-          <div class="actions"><a href="#">View</a><a href="#">Wish</a><a href="#">Cart</a></div>
+          <div class="actions"><a href="#">View</a>'.(self::isLoggedIn() ? '<a href="#">Wish</a>' : '').'<a href="#">Cart</a></div>
       </div>
   </article>';
         return $html;

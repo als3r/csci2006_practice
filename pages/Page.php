@@ -19,9 +19,20 @@ class Page implements PageInterface
      * Link Title => Link
      */
     public const MENU_TOP = [
+        'Shopping Cart' => 'index.php?page=cart',
+        'Sign-in / Sign-up' => 'index.php?page=login',
+    ];
+
+    /**
+     * Top Menu array
+     *
+     * Link Title => Link
+     */
+    public const MENU_TOP_LOGGED = [
         'My Account' => 'index.php?page=account',
-        'Wish List' => '#',
-        'Shopping Cart' => '#',
+        'Wish List' => 'index.php?page=wishlist',
+        'Shopping Cart' => 'index.php?page=cart',
+        'Logout' => 'index.php?page=logout'
     ];
 
     /**
@@ -106,7 +117,7 @@ class Page implements PageInterface
               <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
               <title>' . $this->getTitle() . '</title>
               <link rel="stylesheet" href="_aux/default.css">
-              <!-- Fonts -->              
+              <!-- Fonts -->
               <link href="http://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css">
               <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
           </head>';
@@ -155,8 +166,14 @@ class Page implements PageInterface
     public function getNavigationTop()
     {
         $output = '<nav class="user"><ul>';
-        foreach (self::MENU_TOP as $title => $link) {
-            $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
+        if(self::isLoggedIn()){
+          foreach (self::MENU_TOP_LOGGED as $title => $link) {
+              $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
+          }
+        } else {
+          foreach (self::MENU_TOP as $title => $link) {
+              $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
+          }
         }
         $output .= '</ul></nav>';
         return $output;
@@ -214,5 +231,16 @@ class Page implements PageInterface
     public function getCloseHtmlTag()
     {
         return '</html>';
+    }
+
+
+    /**
+    * Checks if user is logged in
+    */
+    public static function isLoggedIn(){
+      if(isset($_SESSION["is_logged_in"]) && $_SESSION["is_logged_in"] === true){
+        return true;
+      }
+      return false;
     }
 }
