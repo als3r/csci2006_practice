@@ -299,11 +299,8 @@ switch ($_GET['page']) {
 
       //load from session for guest users
       $cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
-
     }
-
     $page->setCartItems($cart_items);
-
 
     break;
 

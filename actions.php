@@ -77,6 +77,7 @@ switch ($_GET['action']) {
       exit;
     }
 
+    $artwork_id = (int) $_GET['artwork_id'];
 
     if($is_logged_in){
 
@@ -102,7 +103,7 @@ switch ($_GET['action']) {
 
       $res = $stmt_insert->execute([
         ":oi_customer" => $_SESSION['user']['customer_id'],
-        ":oi_artwork" => $_GET['artwork_id'],
+        ":oi_artwork" => $artwork_id,
       ]);
 
       if($res){
@@ -116,11 +117,45 @@ switch ($_GET['action']) {
 
     } else {
 
+        $stmt = $pdo->prepare("
+          SELECT * FROM ArtWork
+          WHERE artwork_id = :artwork_id
+        ");
+        $res = $stmt->execute([":artwork_id" => $artwork_id]);
+
+        $artwork = null;
+        if($res){
+          $artwork = $stmt->fetch(PDO::FETCH_ASSOC);;
+        }
+
+        if(empty($artwork) || !isset($artwork["artwork_name"])){
+          // cannot load artwork
+          header("Location: index.php");
+          exit;
+        }
+
         // save in Session if user is not logged in
+        if(!isset($_SESSION['cart'])){
+          $_SESSION['cart'] = [];
+        }
+
+        $row = [];
+        $row['oi_orderNum']     = -1;
+        $row['oi_customer']     = -1;
+        $row['oi_artwork']      = $artwork_id;
+        $row['oi_quantity']     = 1;
+        $row['oi_shippingAddr'] = '';
+        $row['artwork_name']    = $artwork["artwork_name"];
 
 
+        if(isset($_SESSION['cart'][$artwork_id], $_SESSION['cart'][$artwork_id]['oi_quantity']) ){
+          $_SESSION['cart'][$artwork_id]['oi_quantity']++;
+        } else {
+          $_SESSION['cart'][$artwork_id] = $row;
+        }
 
-
+        header("Location: index.php?page=cart");
+        exit;
     }
 
 
