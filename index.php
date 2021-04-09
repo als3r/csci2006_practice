@@ -190,6 +190,8 @@ switch ($_GET['page']) {
           $_SESSION["user"]["customer_id"]       = $user["customer_id"];
         }
 
+        $cart = mergeCartFromSession($pdo);
+
         header("Location: index.php?page=account");
         exit;
       }
@@ -355,4 +357,111 @@ switch ($_GET['page']) {
 }
 
 $page->displayPage();
+
+
+
+/**
+* Merge Cart from Session to Database
+*/
+function mergeCartFromSession($pdo){
+
+  if(!isset($_SESSION['cart'], $_SESSION['is_logged_in'], $_SESSION['user']['customer_id'])){
+      return false;
+  }
+
+  if(!is_array($_SESSION['cart']) || empty($_SESSION['cart']) || count($_SESSION['cart']) == 0){
+    return false;
+  }
+
+  // load from db for logged in users
+  $stmt = $pdo->prepare("
+    SELECT
+      oi.oi_artwork,
+      oi.oi_orderNum,
+      oi.oi_quantity,
+      oi.oi_shippingAddr,
+      a.artwork_name
+    FROM OrderItem oi
+    LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+    WHERE oi.oi_customer = :oi_customer
+  ");
+
+  $stmt->execute([
+    ":oi_customer" => $_SESSION['user']['customer_id'],
+  ]);
+
+  $db_cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $db_items_by_a_id = [];
+  if(is_array($db_cart_items) && count($db_cart_items) > 0 ){
+    foreach ($db_cart_items as $key => $row) {
+      $db_items_by_a_id[$row["oi_artwork"]] = $row;
+    }
+  }
+
+  foreach ($_SESSION['cart'] as $key => $sessOrderItem) {
+
+    $artwork_id = $sessOrderItem["oi_artwork"];
+
+    if(isset($db_items_by_a_id[$artwork_id])){
+
+      // update
+      if($db_items_by_a_id[$artwork_id]["oi_quantity"] != $sessOrderItem["oi_quantity"]){
+
+        $stmt = $pdo->prepare("
+          UPDATE OrderItem oi
+            SET oi.oi_quantity = :oi_quantity
+          WHERE oi.oi_customer = :oi_customer AND oi.oi_orderNum = :oi_orderNum AND oi.oi_artwork = :oi_artwork
+        ");
+
+        $res = $stmt->execute([
+          ":oi_customer" => $_SESSION['user']['customer_id'],
+          ":oi_quantity" => $db_items_by_a_id[$artwork_id]["oi_quantity"] + $sessOrderItem["oi_quantity"],
+          ":oi_orderNum" => -1,
+          ":oi_artwork" => $sessOrderItem["oi_artwork"]
+        ]);
+
+      }
+
+    } else {
+
+      // insert
+      $stmt_insert = $pdo->prepare("
+        INSERT INTO OrderItem
+        (
+          oi_orderNum,
+          oi_customer,
+          oi_artwork,
+          oi_quantity,
+          oi_shippingAddr
+        )
+        VALUES (
+          :oi_orderNum,
+          :oi_customer,
+          :oi_artwork,
+          :oi_quantity,
+          ''
+        )
+        ON DUPLICATE KEY UPDATE oi_quantity = oi_quantity + 1
+      ");
+
+      $res = $stmt_insert->execute([
+        ":oi_customer" => $_SESSION['user']['customer_id'],
+        ":oi_artwork"  => $artwork_id,
+        ":oi_quantity" => $sessOrderItem["oi_quantity"],
+        ":oi_orderNum" => -1,
+      ]);
+    }
+
+  }
+
+  $_SESSION['cart'] = [];
+
+
+  return true;
+
+}
+
+
+
+
 ?>
