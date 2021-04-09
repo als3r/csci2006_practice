@@ -400,4 +400,54 @@ switch ($action) {
 
         break;
 
+
+    // Place Order
+    case 'place-order':
+
+        if (!$is_logged_in) {
+            // only logged in users are allowed
+            header("Location: index.php");
+            exit;
+        }
+
+        $stmt = $pdo->prepare("
+            SELECT
+                (MAX(oi_orderNum) + 1) as nextOrderNumber 
+            FROM OrderItem 
+            WHERE oi_orderNum > -1
+        ");
+        $res = $stmt->execute();
+        if(!$res){
+            // error
+            header("Location: index.php?page=cart");
+            exit;
+        }
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $nextOrder = (int) $result['nextOrderNumber'];
+        $nextOrder = $nextOrder == 0 ? 1 : $nextOrder;
+
+        // mark order as completed
+        $stmt = $pdo->prepare("
+            UPDATE OrderItem oi
+            SET oi.oi_orderNum = :orderNum
+            WHERE 
+                    oi.oi_orderNum = -1
+                AND oi.oi_customer = :oi_customer
+        ");
+        $res = $stmt->execute([
+            ":orderNum" => $nextOrder,
+            ":oi_customer" => $_SESSION["user"]["customer_id"]
+        ]);
+
+        if($res){
+            // Transfer to Confirmation page
+            $_SESSION["order_placed"] = $nextOrder;
+            header("Location: index.php?page=order-confirmation");
+            exit;
+        } else {
+            // error
+            header("Location: index.php?page=cart");
+            exit;
+        }
+        break;
 }

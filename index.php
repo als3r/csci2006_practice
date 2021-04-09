@@ -13,9 +13,10 @@ require_once 'pages/PageArtist.php';
 require_once 'pages/PageArtists.php';
 require_once 'pages/PageError.php';
 require_once 'pages/PageLogin.php';
-require_once 'pages/PageOrderConfirmation.php';
 require_once 'pages/PageCart.php';
 require_once 'pages/PageWishlist.php';
+require_once 'pages/PageOrderConfirmation.php';
+require_once 'pages/PageOrderHistory.php';
 
 session_start();
 $pdo = connect_to_database();
@@ -290,7 +291,7 @@ switch ($_GET['page']) {
           a.artwork_name
         FROM OrderItem oi
         LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
-        WHERE oi.oi_customer = :oi_customer
+        WHERE oi.oi_customer = :oi_customer AND oi.oi_orderNum = -1
       ");
 
       $stmt->execute([
@@ -311,7 +312,10 @@ switch ($_GET['page']) {
 
   case 'wishlist':
 
-    $is_logged_in = Page::isLoggedIn();
+    if(!$is_logged_in){
+      header("Location: index.php");
+      exit;
+    }
 
     $page = new PageWishlist();
 
@@ -335,9 +339,79 @@ switch ($_GET['page']) {
 
     break;
 
-
+  // Order confirmation page
   case 'order-confirmation':
 
+    if(! $is_logged_in || empty($_SESSION['order_placed']) || (int) $_SESSION['order_placed'] == 0){
+        header("Location: index.php?page=cart");
+        exit;
+    }
+
+    $page = new PageOrderConfirmation();
+
+    $stmt = $pdo->prepare("
+      SELECT
+        oi.oi_artwork,
+        oi.oi_quantity,
+        oi.oi_shippingAddr,
+        a.artwork_name
+      FROM OrderItem oi
+      LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+      WHERE oi.oi_orderNum = :oi_orderNum AND oi.oi_customer = :oi_customer 
+    ");
+
+    $stmt->execute([
+        ":oi_customer" => $_SESSION['user']['customer_id'],
+        ":oi_orderNum" => $_SESSION['order_placed'],
+    ]);
+
+    $order = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $page->setOrder($order);
+    $page->setOrderNumber($_SESSION['order_placed']);
+
+    unset($_SESSION['order_placed']);
+
+    break;
+
+  // Order history page
+  case 'order-history':
+
+    if(! $is_logged_in ){
+      header("Location: index.php?page=login");
+      exit;
+    }
+
+    $page = new PageOrderHistory();
+
+    $stmt = $pdo->prepare("
+      SELECT
+        oi.oi_customer,
+        oi.oi_orderNum,    
+        oi.oi_quantity,
+        oi.oi_artwork,
+        oi.oi_shippingAddr,
+        a.artwork_name
+      FROM OrderItem oi
+      LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+      WHERE oi.oi_customer = :oi_customer
+      ORDER BY oi.oi_orderNum DESC
+    ");
+
+    $stmt->execute([
+        ":oi_customer" => $_SESSION['user']['customer_id'],
+    ]);
+
+    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $prepared_orders = [];
+    foreach ($orders as $k => $cart_item){
+
+      if(!isset($prepared_orders[$cart_item['oi_orderNum']])){
+        $prepared_orders[$cart_item['oi_orderNum']] = [];
+      }
+      $prepared_orders[$cart_item['oi_orderNum']][$cart_item['oi_artwork']] = $cart_item;
+    }
+
+    $page->setOrders($prepared_orders);
 
     break;
 
