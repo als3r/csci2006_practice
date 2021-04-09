@@ -44,7 +44,7 @@ class PageArtwork extends Page
       <figure><img width="458" src="artwork/medium/'.$this->getArtwork()->getArtworkId().'.png" alt="Image of '.$this->getArtwork()->getArtworkName().'" title="'.$this->getArtwork()->getArtworkName().'"></figure>
       <p>'.$this->getArtwork()->getArtworkDescription().'</p>
       <p class="list_price">$'.number_format($this->getArtwork()->getArtworkReprintPrice(),2).'</p>
-      <div class="actions">'.(self::isLoggedIn() ? '<a href="#">Add to Wish List</a>': '').'<a href="#">Add to Shopping Cart</a></div>
+      <div class="actions">'.(self::isLoggedIn() ? '<a href="actions.php?action=add-to-wishlist&artwork_id='.$this->getArtwork()->getId().'">Add to Wish List</a>': '').'<a href="actions.php?action=add-to-cart&id='.$this->getArtwork()->getId().'">Add to Shopping Cart</a></div>
       <table class="artwork_info">
           <caption>Product Details</caption>
           <tbody>
