@@ -20,6 +20,12 @@ class PageCart extends Page
      */
     public const NAME = 'Cart';
 
+
+    /**
+    * Cart Items
+    */
+    public $cart_items = [];
+
     /**
      * Get Main section
      *
@@ -30,10 +36,40 @@ class PageCart extends Page
         // First Version of the about us page
         $output = '';
         $output .= '<h2>Cart</h2><br /><br />';
-        $output .= '<p>Welcome to Art Store, your number one source for artwork. We\'re dedicated to providing you the very best of artwork, with an emphasis on quality, fast shipping and handling.</p><br /><br />';
-        $output .= '<p>Founded in 2001 by the founders, Artwork Store has come a long way from its beginnings in Saint Paul, MN. When the founders of the store first started out, their passion for eco-friendly paintings drove them to start their own business.</p><br /><br />';
-        $output .= '<p>We hope you enjoy our products as much as we enjoy offering them to you. If you have any questions or comments, please don\'t hesitate to contact us.</p><br /><br />';
-        $output .= '<p>Sincerely, the founders of Artwork Store</p>';
+        $output .= $this->getCartItems();
         return $output;
+    }
+
+    /**
+    * Display Cart Items
+    */
+    public function getCartItems(){
+
+      $output = '<table>';
+      $output .= '<thead><tr>';
+      $output .= '<th>Artwork</th>';
+      $output .= '<th>Quantity</th>';
+      $output .= '<th>Shipping Address</th>';
+      $output .= '</tr></thead><tbody>';
+
+      if(!empty($this->cart_items) && is_array($this->cart_items) && count($this->cart_items)){
+
+        foreach($this->cart_items as $k => $cart_item){
+            $output .= '<tr>';
+            $output .= '<td><a href="index.php?page=artwork&id='.$cart_item["oi_artwork"].'" >'.$cart_item["artwork_name"].'</a></td>';
+            $output .= '<td>'.$cart_item["oi_quantity"].'</td>';
+            $output .= '<td>'.$cart_item["oi_shippingAddr"].'</td>';
+            $output .= '</tr>';
+        }
+
+      } else {
+        $output .= '<tr><td>No items yet.</td></tr>';
+      }
+      $output .= '</tbody></table>';
+      return $output;
+    }
+
+    public function setCartItems($cart_items){
+      $this->cart_items = $cart_items;
     }
 }

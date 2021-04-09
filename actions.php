@@ -22,8 +22,14 @@ switch ($_GET['action']) {
 
   case 'add-to-wishlist':
 
+    if(!isset($_GET['artwork_id']) || (int) $_GET['artwork_id'] == 0){
+      // artwork must be provided
+      header("Location: index.php");
+      exit;
+    }
 
-    if(! $is_logged_in || !isset($_GET['artwork_id']) || (int) $_GET['artwork_id'] == 0){
+
+    if(! $is_logged_in){
       // only logged in users are allowed
       header("Location: index.php");
       exit;
@@ -65,10 +71,46 @@ switch ($_GET['action']) {
   case 'add-to-cart':
 
 
+    if(!isset($_GET['artwork_id']) || (int) $_GET['artwork_id'] == 0){
+      // artwork must be provided
+      header("Location: index.php");
+      exit;
+    }
+
+
     if($is_logged_in){
 
       // save to db if user is logged in
+      $stmt_insert = $pdo->prepare("
+        INSERT INTO OrderItem
+        (
+          oi_orderNum,
+          oi_customer,
+          oi_artwork,
+          oi_quantity,
+          oi_shippingAddr
+        )
+        VALUES (
+          -1,
+          :oi_customer,
+          :oi_artwork,
+          1,
+          ''
+        )
+        ON DUPLICATE KEY UPDATE oi_quantity = oi_quantity + 1
+      ");
 
+      $res = $stmt_insert->execute([
+        ":oi_customer" => $_SESSION['user']['customer_id'],
+        ":oi_artwork" => $_GET['artwork_id'],
+      ]);
+
+      if($res){
+        header("Location: index.php?page=cart");
+      } else {
+        header("Location: index.php?page=error");
+      }
+      exit;
 
 
 

@@ -272,9 +272,37 @@ switch ($_GET['page']) {
 
   case 'cart':
 
+    $page = new PageCart();
+
     if($is_logged_in){
 
+      // load from db for logged in users
+      $stmt = $pdo->prepare("
+        SELECT
+          oi.oi_artwork,
+          oi.oi_orderNum,
+          oi.oi_quantity,
+          oi.oi_shippingAddr,
+          a.artwork_name
+        FROM OrderItem oi
+        LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+        WHERE oi.oi_customer = :oi_customer
+      ");
+
+      $stmt->execute([
+        ":oi_customer" => $_SESSION['user']['customer_id'],
+      ]);
+
+      $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } else {
+
+      //load from session for guest users
+      $cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+
     }
+
+    $page->setCartItems($cart_items);
 
 
     break;

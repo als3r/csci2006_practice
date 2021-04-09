@@ -20,7 +20,9 @@ class PageWishlist extends Page
      */
     public const NAME = 'Wishlist';
 
-
+    /**
+    * Wishlist Items
+    */
     public $wishlist = [];
 
     /**
