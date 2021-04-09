@@ -393,7 +393,7 @@ switch ($_GET['page']) {
         a.artwork_name
       FROM OrderItem oi
       LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
-      WHERE oi.oi_customer = :oi_customer
+      WHERE oi.oi_customer = :oi_customer AND oi.oi_orderNum > -1
       ORDER BY oi.oi_orderNum DESC
     ");
 

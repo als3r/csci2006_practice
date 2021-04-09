@@ -49,6 +49,11 @@ class PageAccount extends Page
 
 
         $output = '';
+
+
+        $output .= '<div style="margin-bottom: 50px;"><a href="index.php?page=order-history">Order History</a></div>';
+
+
         $output .= '<form class="userForm" action="index.php?page=account" method="POST">';
 
         $output .= '<h4 class="userForm-header">Account Details</h4>';

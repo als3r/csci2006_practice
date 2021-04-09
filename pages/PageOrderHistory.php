@@ -38,15 +38,6 @@ class PageOrderHistory extends Page
         $output .= '<h2>Order History</h2><br /><br />';
         $output .= $this->getOrders();
 
-        if(self::isLoggedIn()){
-            $output .= '<form><button type="submit" class="button">Place Order</button></form>';
-        } else {
-            if(is_array($this->orders) && count($this->orders)){
-                $output .= '<p>Please use this <a href="index.php?page=login">link</a> to sign up to place an order.</p>';
-            }
-        }
-
-
         return $output;
     }
 
@@ -85,7 +76,7 @@ class PageOrderHistory extends Page
         }
 
       } else {
-        $output .= '<p>>No Orders yet.</p><br>';
+        $output .= '<p>No Orders yet.</p><br>';
       }
       return $output;
     }
