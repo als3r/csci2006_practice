@@ -13,10 +13,13 @@ require_once 'pages/PageArtist.php';
 require_once 'pages/PageArtists.php';
 require_once 'pages/PageError.php';
 require_once 'pages/PageLogin.php';
+require_once 'pages/PageOrderConfirmation.php';
+require_once 'pages/PageCart.php';
+require_once 'pages/PageWishlist.php';
 
 session_start();
-
 $pdo = connect_to_database();
+$is_logged_in = Page::isLoggedIn();
 
 switch ($_GET['page']) {
 
@@ -127,18 +130,6 @@ switch ($_GET['page']) {
       $genres   = $artwork->getGenres();
       $location = $artwork->getLocation();
       $artist   = $artwork->getArtist();
-
-//      echo '<pre>';
-//      var_dump($facets);
-//      var_dump($subjects);
-//      var_dump($genres);
-//      var_dump($location);
-//      echo '</pre>';
-//      die('test');
-
-
-
-//      $artwork->loadLocation();
 
       // set artist for the page
       if(isset($artwork)){
@@ -274,6 +265,75 @@ switch ($_GET['page']) {
         break;
       }
     }
+
+    break;
+
+
+
+  case 'cart':
+
+    $page = new PageCart();
+
+    if($is_logged_in){
+
+      // load from db for logged in users
+      $stmt = $pdo->prepare("
+        SELECT
+          oi.oi_artwork,
+          oi.oi_orderNum,
+          oi.oi_quantity,
+          oi.oi_shippingAddr,
+          a.artwork_name
+        FROM OrderItem oi
+        LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+        WHERE oi.oi_customer = :oi_customer
+      ");
+
+      $stmt->execute([
+        ":oi_customer" => $_SESSION['user']['customer_id'],
+      ]);
+
+      $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } else {
+
+      //load from session for guest users
+      $cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+    }
+    $page->setCartItems($cart_items);
+
+    break;
+
+
+  case 'wishlist':
+
+    $is_logged_in = Page::isLoggedIn();
+
+    $page = new PageWishlist();
+
+    $stmt = $pdo->prepare("
+      SELECT
+        w.wl_artwork,
+        a.artwork_name
+      FROM WishlistItem w
+      LEFT JOIN ArtWork a ON a.artwork_id = w.wl_artwork
+      WHERE w.wl_customer = :wl_customer
+    ");
+
+    $stmt->execute([
+      ":wl_customer" => $_SESSION['user']['customer_id'],
+    ]);
+
+    $wishlist = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $page->setWishlistItems($wishlist);
+
+
+    break;
+
+
+  case 'order-confirmation':
+
 
     break;
 
