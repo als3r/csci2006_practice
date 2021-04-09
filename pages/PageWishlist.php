@@ -21,8 +21,8 @@ class PageWishlist extends Page
     public const NAME = 'Wishlist';
 
     /**
-    * Wishlist Items
-    */
+     * Wishlist Items
+     */
     public $wishlist = [];
 
     /**
@@ -40,26 +40,34 @@ class PageWishlist extends Page
     }
 
 
-    public function getWishlist(){
+    public function getWishlist()
+    {
 
-      $output = '<table>';
-      $output .= '<thead><tr><th>Artwork</th></tr></thead>';
-      $output .= '<tbody>';
+        $output = '<table class="table-wishlist">';
+        $output .= '<thead><tr>';
+        $output .= '<th>Artwork</th>';
+        $output .= '<th>Actions</th>';
+        $output .= '</tr ></thead > ';
+        $output .= '<tbody > ';
 
-      if(!empty($this->wishlist) && is_array($this->wishlist) && count($this->wishlist)){
+        if (!empty($this->wishlist) && is_array($this->wishlist) && count($this->wishlist)) {
 
-        foreach($this->wishlist as $k => $wishlist_item){
-            $output .= '<tr><td><a href="index.php?page=artwork&id='.$wishlist_item["wl_artwork"].'" >'.$wishlist_item["artwork_name"].'</a></td></tr>';
+            foreach ($this->wishlist as $k => $wishlist_item) {
+                $output .= '<tr >';
+                $output .= '<td ><a href = "index.php?page=artwork&id=' . $wishlist_item["wl_artwork"] . '" > ' . $wishlist_item["artwork_name"] . '</a ></td >';
+                $output .= '<td ><a href = "actions.php?action=remove-from-wishlist&artwork_id=' . $wishlist_item["wl_artwork"] . '" >Remove</a ></td >';
+                $output .= '</tr > ';
+            }
+
+        } else {
+            $output .= '<tr ><td > No items yet .</td ></tr > ';
         }
-
-      } else {
-        $output .= '<tr><td>No items yet.</td></tr>';
-      }
-      $output .= '</tbody></table>';
-      return $output;
+        $output .= '</tbody ></table > ';
+        return $output;
     }
 
-    public function setWishlistItems($items){
-      $this->wishlist = $items;
+    public function setWishlistItems($items)
+    {
+        $this->wishlist = $items;
     }
 }

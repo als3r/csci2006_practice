@@ -248,3 +248,57 @@ nav.user a:hover {
     padding-left: 0px;
     margin: 20px;
 }
+
+.table-cart,
+.table-wishlist{
+    width: 100%;
+}
+
+.table-cart th{
+    text-align: left;
+    padding: 3px 5px;
+}
+
+.table-cart td{
+    text-align: left;
+    padding: 3px 5px;
+}
+
+.cart-quantity-input{
+    width: 50px;
+    margin-right: 10px;
+}
+
+.cart-address-input{
+    width: 200px;
+    margin-right: 10px;
+}
+
+.table-wishlist th{
+    text-align: left;
+    padding: 3px 5px;
+}
+
+.table-wishlist td{
+    text-align: left;
+    padding: 3px 5px;
+}
+
+.button{
+    padding: 3px 8px;
+}
+
+.form-input {
+    padding: 3px 6px;
+    margin-bottom: 10px;
+    width: 100%;
+    display: inline-block;
+}
+
+.login-form{
+    width: 200px;
+}
+
+.registration-form{
+    width: 400px;
+}

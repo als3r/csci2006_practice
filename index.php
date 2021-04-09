@@ -258,6 +258,8 @@ switch ($_GET['page']) {
             $_SESSION["user"]["customer_id"]       = $user["customer_id"];
           }
 
+          $cart = mergeCartFromSession($pdo);
+
           header("Location: index.php?page=account");
           exit;
         }
