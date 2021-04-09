@@ -515,15 +515,15 @@ function mergeCartFromSession($pdo){
           :oi_customer,
           :oi_artwork,
           :oi_quantity,
-          ''
+          :oi_shippingAddr
         )
-        ON DUPLICATE KEY UPDATE oi_quantity = oi_quantity + 1
       ");
 
       $res = $stmt_insert->execute([
         ":oi_customer" => $_SESSION['user']['customer_id'],
         ":oi_artwork"  => $artwork_id,
         ":oi_quantity" => $sessOrderItem["oi_quantity"],
+        ":oi_shippingAddr" => $sessOrderItem["oi_shippingAddr"],
         ":oi_orderNum" => -1,
       ]);
     }
