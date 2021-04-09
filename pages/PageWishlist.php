@@ -2,9 +2,9 @@
 require_once 'Page.php';
 
 /**
- * Class PageAboutUs
+ * Class PageWishlist
  *
- * About Us page
+ * Wishlist page
  */
 class PageWishlist extends Page
 {

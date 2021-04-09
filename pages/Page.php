@@ -19,7 +19,7 @@ class Page implements PageInterface
      * Link Title => Link
      */
     public const MENU_TOP = [
-        'Shopping Cart' => 'index.php?page=cart',
+        'Shopping Cart'     => 'index.php?page=cart',
         'Sign-in / Sign-up' => 'index.php?page=login',
     ];
 
@@ -29,10 +29,11 @@ class Page implements PageInterface
      * Link Title => Link
      */
     public const MENU_TOP_LOGGED = [
-        'My Account' => 'index.php?page=account',
-        'Wish List' => 'index.php?page=wishlist',
+        'My Account'    => 'index.php?page=account',
+        'Order History' => 'index.php?page=order-history',
+        'Wish List'     => 'index.php?page=wishlist',
         'Shopping Cart' => 'index.php?page=cart',
-        'Logout' => 'index.php?page=logout'
+        'Logout'        => 'index.php?page=logout'
     ];
 
     /**

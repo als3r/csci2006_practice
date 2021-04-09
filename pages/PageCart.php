@@ -2,9 +2,9 @@
 require_once 'Page.php';
 
 /**
- * Class PageAboutUs
+ * Class PageCart
  *
- * About Us page
+ * Cart page
  */
 class PageCart extends Page
 {
@@ -39,7 +39,10 @@ class PageCart extends Page
         $output .= $this->getCartItems();
 
         if(self::isLoggedIn()){
-            $output .= '<form><button type="submit" class="button">Place Order</button></form>';
+            $output .= '<form method="post" action="actions.php">';
+            $output .= '<input type="hidden" name="action" value="place-order" />';
+            $output .= '<button type="submit" class="button">Place Order</button>';
+            $output .= '</form>';
         } else {
             if(is_array($this->cart_items) && count($this->cart_items)){
                 $output .= '<p>Please use this <a href="index.php?page=login">link</a> to sign up to place an order.</p>';
