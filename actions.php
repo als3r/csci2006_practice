@@ -13,6 +13,11 @@ require_once 'pages/PageArtist.php';
 require_once 'pages/PageArtists.php';
 require_once 'pages/PageError.php';
 require_once 'pages/PageLogin.php';
+require_once 'pages/PageCart.php';
+require_once 'pages/PageWishlist.php';
+require_once 'pages/PageOrderConfirmation.php';
+require_once 'pages/PageOrderHistory.php';
+
 
 session_start();
 $pdo = connect_to_database();
@@ -269,6 +274,40 @@ switch ($action) {
             exit;
         }
 
+        if(empty($_POST['quantity'])){
+            $page = new PageCart();
+            if($is_logged_in){
+
+                // load from db for logged in users
+                $stmt = $pdo->prepare("
+                    SELECT
+                      oi.oi_artwork,
+                      oi.oi_orderNum,
+                      oi.oi_quantity,
+                      oi.oi_shippingAddr,
+                      a.artwork_name
+                    FROM OrderItem oi
+                    LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+                    WHERE oi.oi_customer = :oi_customer AND oi.oi_orderNum = -1
+                  ");
+
+                $stmt->execute([
+                    ":oi_customer" => $_SESSION['user']['customer_id'],
+                ]);
+
+                $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            } else {
+
+                //load from session for guest users
+                $cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+            }
+            $page->setCartItems($cart_items);
+            $page->setErrorMessage('Validation Error. <br>Quantity cannot be empty.');
+            $page->displayPage();
+            exit;
+        }
+
         $artwork_id = (int) $_POST['artwork_id'];
         $quantity   = (int) $_POST['quantity'];
 
@@ -336,6 +375,40 @@ switch ($action) {
         if (!isset($_POST['artwork_id']) || (int)$_POST['artwork_id'] == 0) {
             // artwork must be provided
             header("Location: index.php");
+            exit;
+        }
+
+        if(empty($_POST['address'])){
+            $page = new PageCart();
+            if($is_logged_in){
+
+                // load from db for logged in users
+                $stmt = $pdo->prepare("
+                    SELECT
+                      oi.oi_artwork,
+                      oi.oi_orderNum,
+                      oi.oi_quantity,
+                      oi.oi_shippingAddr,
+                      a.artwork_name
+                    FROM OrderItem oi
+                    LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
+                    WHERE oi.oi_customer = :oi_customer AND oi.oi_orderNum = -1
+                  ");
+
+                $stmt->execute([
+                    ":oi_customer" => $_SESSION['user']['customer_id'],
+                ]);
+
+                $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            } else {
+
+                //load from session for guest users
+                $cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+            }
+            $page->setCartItems($cart_items);
+            $page->setErrorMessage('Validation Error. <br>Address cannot be empty.');
+            $page->displayPage();
             exit;
         }
 

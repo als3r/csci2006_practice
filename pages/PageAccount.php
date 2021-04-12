@@ -20,6 +20,8 @@ class PageAccount extends Page
      */
     public const NAME = 'Account';
 
+    public $customer = null;
+
     /**
      * Get Main section
      *
@@ -36,6 +38,55 @@ class PageAccount extends Page
      * @return string
      */
     function accountDetails(){
+
+        $username  = '';
+        $full_name = '';
+        $address   = '';
+
+        $customer = $this->getCustomer();
+        if($customer !== null){
+            $username   = !empty($customer['customer_username']) ? $customer['customer_username'] : $username;
+            $full_name  = !empty($customer['customer_fullName']) ? $customer['customer_fullName'] : $full_name;
+            $address    = !empty($customer['customer_addr'])     ? $customer['customer_addr']        : $address;
+        }
+
+        $username   = !empty($_POST['userform_username'])  ? $_POST['userform_username']  : $username;
+        $full_name  = !empty($_POST['userform_full_name']) ? $_POST['userform_full_name'] : $full_name;
+        $address    = !empty($_POST['userform_address'])   ? $_POST['userform_address']   : $address;
+
+        $output = '';
+        $output .= '<div style="margin-bottom: 50px;"><a href="index.php?page=order-history">Order History</a></div>';
+
+        $output .= '<form class="userForm" action="index.php?page=account" method="POST">';
+
+        $output .= '<h4 class="userForm-header">Account Details</h4>';
+
+        $output .= '<label for="userFormFullName"  class="form-label" >Full Name</label>';
+        $output .= '<input id="userFormFullName" name="userform_full_name" type="text" value="'.$full_name.'" required class="form-input" />';
+
+        $output .= '<label for="userFormAddress"  class="form-label" >Address</label>';
+        $output .= '<input id="userFormAddress" name="userform_address" type="text" value="'.$address.'" required class="form-input" />';
+
+        $output .= '<label for="userFormUsername"  class="form-label" >Username</label>';
+        $output .= '<input id="userFormUsername" name="userform_username" type="text" value="'.$username.'" required class="form-input" />';
+
+        $output .= '<label for="userFormPassword"  class="form-label" >Password</label>';
+        $output .= '<input id="userFormPassword" name="userform_password" type="password" value="" minlength="8" required class="form-input" />';
+
+        $output .= '<input type="hidden" value="account" name="page" />';
+        $output .= '<input type="submit" value="Save Changes" name="userform_submit" class="form-submit" >';
+        $output .= '</form>';
+
+        return $output;
+    }
+
+
+    /**
+     * Get Old Account Details Section
+     *
+     * @return string
+     */
+    function accountDetailsOld(){
 
         $first_name = !empty($_POST['userform_first_name']) ? $_POST['userform_first_name'] : '';
         $last_name  = !empty($_POST['userform_last_name'])  ? $_POST['userform_last_name']  : '';
@@ -88,5 +139,13 @@ class PageAccount extends Page
         $output .= '</form>';
 
         return $output;
+    }
+
+    public function getCustomer(){
+        return $this->customer;
+    }
+
+    public function setCustomer($customer){
+        $this->customer = $customer;
     }
 }
