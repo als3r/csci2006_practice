@@ -302,3 +302,14 @@ nav.user a:hover {
 .registration-form{
     width: 400px;
 }
+
+.error-message-container {
+    margin: 20px 0;
+    background: #ffb8c2;
+    padding: 15px;
+}
+
+.error-message {
+    font-weight: bold;
+    line-height: 1.5;
+}

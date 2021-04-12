@@ -56,9 +56,20 @@ class Page implements PageInterface
     public $title;
 
     /**
+     * Error Message
+     *
+     * @var string
+     */
+    public $errorMessage = '';
+
+    /**
      * Name of the class
      */
     public const NAME = 'Page';
+
+    public function __construct() {
+
+    }
 
     /**
      * Get Name of the object
@@ -133,6 +144,7 @@ class Page implements PageInterface
         $output = '<body>';
         $output .= $this->getHeader();
         $output .= '<main>';
+        $output .= $this->getErrorMessage();
         $output .= $this->getMain();
         $output .= '</main>';
         $output .= $this->getFooter();
@@ -243,5 +255,17 @@ class Page implements PageInterface
         return true;
       }
       return false;
+    }
+
+    public function getErrorMessage(){
+        if(!empty($this->errorMessage)){
+            $output = '<div class="error-message-container"><p class="error-message">'.$this->errorMessage.'</p></div>';
+            $this->errorMessage = '';
+            return $output;
+        }
+    }
+
+    public function setErrorMessage($message){
+        $this->errorMessage = $message;
     }
 }

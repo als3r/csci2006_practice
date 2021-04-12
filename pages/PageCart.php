@@ -73,14 +73,14 @@ class PageCart extends Page
             $output .= '<td><a href="index.php?page=artwork&id='.(int)$cart_item["oi_artwork"].'" >'.$cart_item["artwork_name"].'</a></td>';
 
             $output .= '<td><form action="actions.php" method="post">';
-            $output .= '<input type="number" name="quantity" value="'.(int) $cart_item["oi_quantity"].'" class="cart-quantity-input" />';
+            $output .= '<input type="number" name="quantity" value="'.(int) $cart_item["oi_quantity"].'" class="cart-quantity-input"  min="1" max="1000" />';
             $output .= '<input type="hidden" name="artwork_id" value="'.(int) $cart_item["oi_artwork"].'" />';
             $output .= '<input type="hidden" name="action" value="update-quantity-cart" />';
             $output .= '<button type="submit" class="button">Update</button>';
             $output .= '</form></td>';
 
             $output .= '<td><form action="actions.php" method="post">';
-            $output .= '<input type="text" name="address" value="'.$cart_item["oi_shippingAddr"].'" class="cart-address-input" />';
+            $output .= '<input type="text" name="address" value="'.$cart_item["oi_shippingAddr"].'" class="cart-address-input" required />';
             $output .= '<input type="hidden" name="artwork_id" value="'.(int) $cart_item["oi_artwork"].'" />';
             $output .= '<input type="hidden" name="action" value="update-address-cart" />';
             $output .= '<button type="submit" class="button">Update</button>';

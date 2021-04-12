@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/util.php';
+require_once 'helpers/Validation.php';
 
 require_once 'models/Artist.php';
 require_once 'models/Artwork.php';
@@ -151,7 +152,74 @@ switch ($_GET['page']) {
 
   // Account Page
   case 'account':
+
     $page = new PageAccount();
+
+    if(!empty($_POST)){
+
+      if(empty($_POST['userform_username'])){
+        $page->setErrorMessage('Validation Error. <br>Username cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['userform_password'])){
+        $page->setErrorMessage('Validation Error. <br>Password cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(strlen($_POST['userform_password']) <= 7){
+        $page->setErrorMessage('Validation Error. <br>Password must be at least 8 characters.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['userform_address'])){
+        $page->setErrorMessage('Validation Error. <br>Address cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['userform_full_name'])){
+        $page->setErrorMessage('Validation Error. <br>Fullname cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      $stmt_update = $pdo->prepare("
+          UPDATE Customer SET
+          customer_username = :customer_username,
+          customer_passhash = :customer_passhash, 
+          customer_fullName = :customer_fullName, 
+          customer_addr     = :customer_addr
+          WHERE customer_id = :customer_id
+        ");
+
+      $res = $stmt_update->execute([
+          ":customer_username" => $_POST['userform_username'],
+          ":customer_passhash" => md5($_POST['userform_username'].'SECRET'.$_POST['userform_password']),
+          ":customer_fullName" => $_POST['userform_full_name'],
+          ":customer_addr"     => $_POST['userform_address'],
+          ":customer_id"       => $_SESSION['user']['customer_id'],
+      ]);
+
+      if($res){
+
+
+
+      } else {
+        $page->setErrorMessage('System Error. <br>Cannot update customer details.');
+      }
+
+    }
+
+
+    $stmt = $pdo->prepare("SELECT customer_id, customer_username, customer_fullName, customer_addr FROM Customer WHERE customer_id = :customer_id");
+    $stmt->execute([":customer_id" => $_SESSION["user"]["customer_id"]]);
+    $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $page->setCustomer($customer);
     break;
 
   // About Us Page
@@ -167,9 +235,22 @@ switch ($_GET['page']) {
       exit;
     }
 
+    $page = new PageLogin();
 
     // Login action
     if(!empty($_POST) ){
+
+      if(empty($_POST['username'])){
+        $page->setErrorMessage('Validation Error. <br>Username cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['password'])){
+        $page->setErrorMessage('Validation Error. <br>Password cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
 
       if(
         !empty($_POST['username']) &&
@@ -189,23 +270,58 @@ switch ($_GET['page']) {
           $_SESSION["user"] = [];
           $_SESSION["user"]["customer_fullName"] = $user["customer_fullName"];
           $_SESSION["user"]["customer_id"]       = $user["customer_id"];
+
+          $cart = mergeCartFromSession($pdo);
+
+          header("Location: index.php?page=account");
+          exit;
+        } else {
+          $page->setErrorMessage('Validation Error. <br>Combination of username and password not found.');
         }
-
-        $cart = mergeCartFromSession($pdo);
-
-        header("Location: index.php?page=account");
-        exit;
       }
     }
 
-    $page = new PageLogin();
+
+
     break;
 
   // Registration Action
   case 'registration':
 
-    // Login action
+    $page = new PageLogin();
+
+    // Registration action
     if(!empty($_POST) ){
+
+      if(empty($_POST['username'])){
+        $page->setErrorMessage('Validation Error. <br>Username cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['password'])){
+        $page->setErrorMessage('Validation Error. <br>Password cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(strlen($_POST['password']) <= 7){
+        $page->setErrorMessage('Validation Error. <br>Password must be at least 8 characters.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['address'])){
+        $page->setErrorMessage('Validation Error. <br>Address cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
+
+      if(empty($_POST['fullname'])){
+        $page->setErrorMessage('Validation Error. <br>Fullname cannot be empty.');
+        $page->displayPage();
+        exit;
+      }
 
       if(
         !empty($_POST['username']) &&
@@ -214,7 +330,6 @@ switch ($_GET['page']) {
         !empty($_POST['fullname'])
       ){
 
-
         $stmt = $pdo->prepare("SELECT * FROM Customer WHERE customer_username = :username");
         $stmt->execute([
           "username" => $_POST['username'],
@@ -222,9 +337,7 @@ switch ($_GET['page']) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if($user){
-          $message = "User already exist";
-          $page = new PageLogin();
-          $page->setMessage($message);
+          $page->setErrorMessage('Validation Error. <br>User already exist.');
           $page->displayPage();
           exit;
         }
@@ -263,17 +376,14 @@ switch ($_GET['page']) {
 
           header("Location: index.php?page=account");
           exit;
+        } else {
+          $page->setErrorMessage('System Error. <br>Cannot create user.');
         }
-
-        $page = new PageLogin();
-        $page->setMessage($message);
         break;
       }
     }
 
     break;
-
-
 
   case 'cart':
 
