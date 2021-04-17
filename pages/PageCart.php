@@ -38,7 +38,7 @@ class PageCart extends Page
         $output .= '<h2>Cart</h2><br /><br />';
         $output .= $this->getCartItems();
 
-        if(self::isLoggedIn()){
+        if(User::hasPermission(User::PERMISSION_PLACE_ORDER)){
             $output .= '<form method="post" action="actions.php">';
             $output .= '<input type="hidden" name="action" value="place-order" />';
             $output .= '<button type="submit" class="button">Place Order</button>';
