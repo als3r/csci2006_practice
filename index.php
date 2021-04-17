@@ -400,7 +400,7 @@ switch ($page_query) {
 
     $page = new PageCart();
 
-    if($is_logged_in){
+    if(User::getUserRole() == USER::ROLE_CUSTOMER){
 
       // load from db for logged in users
       $stmt = $pdo->prepare("
