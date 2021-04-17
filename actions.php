@@ -1,23 +1,5 @@
 <?php
 require_once 'config.php';
-require_once 'helpers/util.php';
-
-require_once 'models/Artist.php';
-require_once 'models/Artwork.php';
-require_once 'pages/PageHome.php';
-require_once 'pages/PageAboutUs.php';
-require_once 'pages/PageAccount.php';
-require_once 'pages/PageArtwork.php';
-require_once 'pages/PageArtworks.php';
-require_once 'pages/PageArtist.php';
-require_once 'pages/PageArtists.php';
-require_once 'pages/PageError.php';
-require_once 'pages/PageLogin.php';
-require_once 'pages/PageCart.php';
-require_once 'pages/PageWishlist.php';
-require_once 'pages/PageOrderConfirmation.php';
-require_once 'pages/PageOrderHistory.php';
-
 
 session_start();
 $pdo = connect_to_database();
@@ -49,7 +31,7 @@ switch ($action) {
         }
 
 
-        if (!USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (!User::getUserRole() == User::ROLE_CUSTOMER) {
             // only logged in users are allowed
             header("Location: index.php");
             exit;
@@ -93,7 +75,7 @@ switch ($action) {
         }
 
 
-        if (!USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (!User::getUserRole() == User::ROLE_CUSTOMER) {
             // only logged in users are allowed
             header("Location: index.php");
             exit;
@@ -136,7 +118,7 @@ switch ($action) {
 
         $artwork_id = (int)$_GET['artwork_id'];
 
-        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (User::getUserRole() == User::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_insert = $pdo->prepare("
@@ -234,7 +216,7 @@ switch ($action) {
 
         $artwork_id = (int)$_GET['artwork_id'];
 
-        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (User::getUserRole() == User::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_delete = $pdo->prepare("
@@ -311,7 +293,7 @@ switch ($action) {
 
         if(empty($_POST['quantity'])){
             $page = new PageCart();
-            if(USER::getUserRole() == USER::ROLE_CUSTOMER){
+            if(User::getUserRole() == User::ROLE_CUSTOMER){
 
                 // load from db for logged in users
                 $stmt = $pdo->prepare("
@@ -346,7 +328,7 @@ switch ($action) {
         $artwork_id = (int) $_POST['artwork_id'];
         $quantity   = (int) $_POST['quantity'];
 
-        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (User::getUserRole() == User::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_update = $pdo->prepare("
@@ -421,7 +403,7 @@ switch ($action) {
 
         if(empty($_POST['address'])){
             $page = new PageCart();
-            if(USER::getUserRole() == USER::ROLE_CUSTOMER){
+            if(User::getUserRole() == User::ROLE_CUSTOMER){
 
                 // load from db for logged in users
                 $stmt = $pdo->prepare("
@@ -456,7 +438,7 @@ switch ($action) {
         $artwork_id = (int) $_POST['artwork_id'];
         $address    = $_POST['address'];
 
-        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (User::getUserRole() == User::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_update = $pdo->prepare("
@@ -523,7 +505,7 @@ switch ($action) {
             exit;
         }
 
-        if (!USER::getUserRole() == USER::ROLE_CUSTOMER) {
+        if (!User::getUserRole() == User::ROLE_CUSTOMER) {
             // only logged in users are allowed
             header("Location: index.php");
             exit;

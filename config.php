@@ -18,6 +18,7 @@ define("PAGE_ORDER_HISTORY",      "order-history");
 define("PAGE_WISHLIST",           "wishlist");
 define("PAGE_CART",               "cart");
 define("PAGE_ORDER_CONFIRMATION", "order-confirmation");
+define("PAGE_REGISTRATION",       "registration");
 define("PAGES", [
     PAGE_HOME,
     PAGE_ARTIST,
@@ -29,6 +30,8 @@ define("PAGES", [
     PAGE_ORDER_HISTORY,
     PAGE_WISHLIST,
     PAGE_CART,
+    PAGE_ORDER_CONFIRMATION,
+    PAGE_REGISTRATION,
 ]);
 
 // Actions
@@ -37,7 +40,7 @@ define("ACTION_UPDATE_WISHLIST_REMOVE_ITEM", "remove-from-wishlist");
 define("ACTION_UPDATE_CART_ADD_ITEM",        "add-to-cart");
 define("ACTION_UPDATE_CART_REMOVE_ITEM",     "remove-from-cart");
 define("ACTION_UPDATE_CART_QUANTITY",        "update-quantity-cart");
-define("ACTION_UPDATE_CART_ADDRESS",         "update-address-cart'");
+define("ACTION_UPDATE_CART_ADDRESS",         "update-address-cart");
 define("ACTION_PLACE_ORDER",                 "place-order");
 define("ACTIONS", [
     ACTION_UPDATE_WISHLIST_ADD_ITEM,

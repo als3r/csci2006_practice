@@ -6,6 +6,7 @@ $pdo = connect_to_database();
 $is_logged_in = User::isLoggedIn();
 if(!$is_logged_in){
   User::logInWithDefaultRole();
+  $is_logged_in = true;
 }
 
 $page_query = !empty($_GET['page']) ? $_GET['page'] : '';
@@ -234,7 +235,7 @@ switch ($page_query) {
   // Login Page
   case PAGE_LOGIN:
 
-    if(USER::getUserRole() == USER::ROLE_CUSTOMER){
+    if(User::getUserRole() == User::ROLE_CUSTOMER){
       header("Location: index.php?page=" . PAGE_ACCOUNT);
       exit;
     }
@@ -261,7 +262,10 @@ switch ($page_query) {
         !empty($_POST['password'])
       ){
 
-        $stmt = $pdo->prepare("SELECT * FROM Customer WHERE customer_username = :username AND customer_passhash = :password");
+        $stmt = $pdo->prepare("
+            SELECT * FROM Customer 
+            WHERE customer_username = :username AND customer_passhash = :password
+        ");
 
         $stmt->execute([
           "username" => $_POST['username'],
@@ -271,7 +275,7 @@ switch ($page_query) {
 
         if(isset($user["customer_id"], $user["customer_fullName"])){
           $_SESSION["is_logged_in"] = true;
-          $_SESSION["role"] = USER::ROLE_CUSTOMER;
+          $_SESSION["role"] = User::ROLE_CUSTOMER;
           $_SESSION["user"] = [];
           $_SESSION["user"]["customer_fullName"] = $user["customer_fullName"];
           $_SESSION["user"]["customer_id"]       = $user["customer_id"];
@@ -291,7 +295,7 @@ switch ($page_query) {
     break;
 
   // Registration Action
-  case 'registration':
+  case PAGE_REGISTRATION:
 
     $page = new PageLogin();
 
@@ -358,7 +362,7 @@ switch ($page_query) {
           ":customer_username" => $_POST['username'],
           ":customer_passhash" => md5($_POST['username'].'SECRET'.$_POST['password']),
           ":customer_fullName" => $_POST['fullname'],
-          ":customer_addr"    => $_POST['address'],
+          ":customer_addr"     => $_POST['address'],
         ]);
 
         if($res){
@@ -372,6 +376,7 @@ switch ($page_query) {
 
           if(isset($user["customer_id"], $user["customer_fullName"])){
             $_SESSION["is_logged_in"] = true;
+            $_SESSION["role"] = User::ROLE_CUSTOMER;
             $_SESSION["user"] = [];
             $_SESSION["user"]["customer_fullName"] = $user["customer_fullName"];
             $_SESSION["user"]["customer_id"]       = $user["customer_id"];
@@ -379,7 +384,7 @@ switch ($page_query) {
 
           $cart = mergeCartFromSession($pdo);
 
-          header("Location: index.php?page=account");
+          header("Location: index.php?page=" . PAGE_ACCOUNT);
           exit;
         } else {
           $page->setErrorMessage('System Error. <br>Cannot create user.');
@@ -400,7 +405,7 @@ switch ($page_query) {
 
     $page = new PageCart();
 
-    if(User::getUserRole() == USER::ROLE_CUSTOMER){
+    if(User::getUserRole() == User::ROLE_CUSTOMER){
 
       // load from db for logged in users
       $stmt = $pdo->prepare("
@@ -541,7 +546,7 @@ switch ($page_query) {
 
   // Logout Action
   case PAGE_LOGOUT:
-    USER::clearSession();
+    User::clearSession();
     header("Location: index.php");
     exit;
     break;
@@ -579,7 +584,7 @@ function mergeCartFromSession($pdo){
       a.artwork_name
     FROM OrderItem oi
     LEFT JOIN ArtWork a ON a.artwork_id = oi.oi_artwork
-    WHERE oi.oi_customer = :oi_customer
+    WHERE oi.oi_customer = :oi_customer AND oi.oi_orderNum = -1
   ");
 
   $stmt->execute([
