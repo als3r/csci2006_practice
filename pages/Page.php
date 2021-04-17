@@ -18,9 +18,9 @@ class Page implements PageInterface
      *
      * Link Title => Link
      */
-    public const MENU_TOP = [
-        'Shopping Cart'     => 'index.php?page=cart',
-        'Sign-in / Sign-up' => 'index.php?page=login',
+    public const MENU_TOP_VISITOR = [
+        'Shopping Cart'     => 'index.php?page=' . PAGE_CART,
+        'Sign-in / Sign-up' => 'index.php?page=' . PAGE_LOGIN,
     ];
 
     /**
@@ -28,12 +28,12 @@ class Page implements PageInterface
      *
      * Link Title => Link
      */
-    public const MENU_TOP_LOGGED = [
-        'My Account'    => 'index.php?page=account',
-        'Order History' => 'index.php?page=order-history',
-        'Wish List'     => 'index.php?page=wishlist',
-        'Shopping Cart' => 'index.php?page=cart',
-        'Logout'        => 'index.php?page=logout'
+    public const MENU_TOP_CUSTOMER = [
+        'My Account'    => 'index.php?page=' . PAGE_ACCOUNT,
+        'Order History' => 'index.php?page=' . PAGE_ORDER_HISTORY,
+        'Wish List'     => 'index.php?page=' . PAGE_WISHLIST,
+        'Shopping Cart' => 'index.php?page=' . PAGE_CART,
+        'Logout'        => 'index.php?page=' . PAGE_LOGOUT
     ];
 
     /**
@@ -179,12 +179,12 @@ class Page implements PageInterface
     public function getNavigationTop()
     {
         $output = '<nav class="user"><ul>';
-        if(self::isLoggedIn()){
-          foreach (self::MENU_TOP_LOGGED as $title => $link) {
+        if(! User::isLoggedIn() || USER::getUserRole() == USER::ROLE_VISITOR){
+          foreach (self::MENU_TOP_VISITOR as $title => $link) {
               $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
           }
-        } else {
-          foreach (self::MENU_TOP as $title => $link) {
+        } else if (User::isLoggedIn() && USER::getUserRole() == USER::ROLE_CUSTOMER) {
+          foreach (self::MENU_TOP_CUSTOMER as $title => $link) {
               $output .= '<li><a href="' . $link . '">' . $title . '</a></li>';
           }
         }

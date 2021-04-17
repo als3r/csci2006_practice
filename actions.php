@@ -21,15 +21,26 @@ require_once 'pages/PageOrderHistory.php';
 
 session_start();
 $pdo = connect_to_database();
-$is_logged_in = Page::isLoggedIn();
 
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
 $action = !empty($_POST['action']) && $action == '' ? $_POST['action'] : $action;
 
+if(!in_array($action, ACTIONS)){
+    $page = new PageNotFound();
+    $page->displayPage();
+    exit;
+}
+
 switch ($action) {
 
     // Add artwork to wishlist
-    case 'add-to-wishlist':
+    case ACTION_UPDATE_WISHLIST_ADD_ITEM:
+
+        if(!User::hasPermission(User::PERMISSION_UPDATE_WISHLIST_ADD_ITEM)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
 
         if (!isset($_GET['artwork_id']) || (int)$_GET['artwork_id'] == 0) {
             // artwork must be provided
@@ -38,7 +49,7 @@ switch ($action) {
         }
 
 
-        if (!$is_logged_in) {
+        if (!USER::getUserRole() == USER::ROLE_CUSTOMER) {
             // only logged in users are allowed
             header("Location: index.php");
             exit;
@@ -67,7 +78,13 @@ switch ($action) {
         break;
 
     // Remove artwork from wishlist
-    case 'remove-from-wishlist':
+    case ACTION_UPDATE_WISHLIST_REMOVE_ITEM:
+
+        if(!User::hasPermission(User::PERMISSION_UPDATE_WISHLIST_REMOVE_ITEM)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
 
         if (!isset($_GET['artwork_id']) || (int)$_GET['artwork_id'] == 0) {
             // artwork must be provided
@@ -76,7 +93,7 @@ switch ($action) {
         }
 
 
-        if (!$is_logged_in) {
+        if (!USER::getUserRole() == USER::ROLE_CUSTOMER) {
             // only logged in users are allowed
             header("Location: index.php");
             exit;
@@ -103,7 +120,13 @@ switch ($action) {
         break;
 
     // Add artwork to cart
-    case 'add-to-cart':
+    case ACTION_UPDATE_CART_ADD_ITEM:
+
+        if(!User::hasPermission(User::PERMISSION_UPDATE_CART_ADD_ITEM)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
 
         if (!isset($_GET['artwork_id']) || (int)$_GET['artwork_id'] == 0) {
             // artwork must be provided
@@ -113,7 +136,7 @@ switch ($action) {
 
         $artwork_id = (int)$_GET['artwork_id'];
 
-        if ($is_logged_in) {
+        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_insert = $pdo->prepare("
@@ -195,7 +218,13 @@ switch ($action) {
         break;
 
     // Remove artwork from cart
-    case 'remove-from-cart':
+    case ACTION_UPDATE_CART_REMOVE_ITEM:
+
+        if(!User::hasPermission(User::PERMISSION_UPDATE_CART_REMOVE_ITEM)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
 
         if (!isset($_GET['artwork_id']) || (int)$_GET['artwork_id'] == 0) {
             // artwork must be provided
@@ -205,7 +234,7 @@ switch ($action) {
 
         $artwork_id = (int)$_GET['artwork_id'];
 
-        if ($is_logged_in) {
+        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_delete = $pdo->prepare("
@@ -260,7 +289,13 @@ switch ($action) {
         break;
 
     // Update quantity for cart
-    case 'update-quantity-cart':
+    case ACTION_UPDATE_CART_QUANTITY:
+
+        if(!User::hasPermission(User::PERMISSION_UPDATE_CART_QUANTITY)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
 
         if (!isset($_POST['artwork_id']) || (int) $_POST['artwork_id'] == 0) {
             // artwork must be provided
@@ -276,7 +311,7 @@ switch ($action) {
 
         if(empty($_POST['quantity'])){
             $page = new PageCart();
-            if($is_logged_in){
+            if(USER::getUserRole() == USER::ROLE_CUSTOMER){
 
                 // load from db for logged in users
                 $stmt = $pdo->prepare("
@@ -311,7 +346,7 @@ switch ($action) {
         $artwork_id = (int) $_POST['artwork_id'];
         $quantity   = (int) $_POST['quantity'];
 
-        if ($is_logged_in) {
+        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_update = $pdo->prepare("
@@ -370,7 +405,13 @@ switch ($action) {
         break;
 
     // Update address for cart
-    case 'update-address-cart':
+    case ACTION_UPDATE_CART_ADDRESS:
+
+        if(!User::hasPermission(User::PERMISSION_UPDATE_CART_ADDRESS)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
 
         if (!isset($_POST['artwork_id']) || (int)$_POST['artwork_id'] == 0) {
             // artwork must be provided
@@ -380,7 +421,7 @@ switch ($action) {
 
         if(empty($_POST['address'])){
             $page = new PageCart();
-            if($is_logged_in){
+            if(USER::getUserRole() == USER::ROLE_CUSTOMER){
 
                 // load from db for logged in users
                 $stmt = $pdo->prepare("
@@ -415,7 +456,7 @@ switch ($action) {
         $artwork_id = (int) $_POST['artwork_id'];
         $address    = $_POST['address'];
 
-        if ($is_logged_in) {
+        if (USER::getUserRole() == USER::ROLE_CUSTOMER) {
 
             // save to db if user is logged in
             $stmt_update = $pdo->prepare("
@@ -473,11 +514,16 @@ switch ($action) {
 
         break;
 
-
     // Place Order
-    case 'place-order':
+    case ACTION_PLACE_ORDER:
 
-        if (!$is_logged_in) {
+        if(!User::hasPermission(User::PERMISSION_PLACE_ORDER)){
+            $page = new PageNotFound();
+            $page->displayPage();
+            exit;
+        }
+
+        if (!USER::getUserRole() == USER::ROLE_CUSTOMER) {
             // only logged in users are allowed
             header("Location: index.php");
             exit;

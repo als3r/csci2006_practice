@@ -1,32 +1,30 @@
 <?php
 require_once 'config.php';
-require_once 'helpers/util.php';
-require_once 'helpers/Validation.php';
-
-require_once 'models/Artist.php';
-require_once 'models/Artwork.php';
-require_once 'pages/PageHome.php';
-require_once 'pages/PageAboutUs.php';
-require_once 'pages/PageAccount.php';
-require_once 'pages/PageArtwork.php';
-require_once 'pages/PageArtworks.php';
-require_once 'pages/PageArtist.php';
-require_once 'pages/PageArtists.php';
-require_once 'pages/PageError.php';
-require_once 'pages/PageLogin.php';
-require_once 'pages/PageCart.php';
-require_once 'pages/PageWishlist.php';
-require_once 'pages/PageOrderConfirmation.php';
-require_once 'pages/PageOrderHistory.php';
-
 session_start();
 $pdo = connect_to_database();
-$is_logged_in = Page::isLoggedIn();
 
-switch ($_GET['page']) {
+$is_logged_in = User::isLoggedIn();
+if(!$is_logged_in){
+  User::logInWithDefaultRole();
+}
+
+$page_query = !empty($_GET['page']) ? $_GET['page'] : '';
+$page_query = !empty($_POST['page']) && $page_query == '' ? $_POST['page'] : $page_query;
+
+if(! in_array($page_query, PAGES)){
+  if($page_query == ""){
+    $page_query = PAGE_HOME;
+  } else {
+    $page = new PageNotFound();
+    $page->displayPage();
+    exit;
+  }
+}
+
+switch ($page_query) {
 
   // Artwork page
-  case 'artist':
+  case PAGE_ARTIST:
 
     // test create
     $new_artist = new Artist(null, $pdo);
@@ -86,7 +84,7 @@ switch ($_GET['page']) {
     // end artist
 
   // Artist Page
-  case 'artwork':
+  case PAGE_ARTWORK:
 
     // test create
     $new_artwork = new Artwork(null, $pdo);
@@ -151,7 +149,13 @@ switch ($_GET['page']) {
     // end of artworks
 
   // Account Page
-  case 'account':
+  case PAGE_ACCOUNT:
+
+    if(!User::hasPermission(User::PERMISSION_VIEW_ACCOUNT)){
+      $page = new PageNotFound();
+      $page->displayPage();
+      exit;
+    }
 
     $page = new PageAccount();
 
@@ -223,15 +227,15 @@ switch ($_GET['page']) {
     break;
 
   // About Us Page
-  case 'about-us':
+  case PAGE_ABOUT:
     $page = new PageAboutUs();
     break;
 
   // Login Page
-  case 'login':
+  case PAGE_LOGIN:
 
-    if(Page::isLoggedIn()){
-      header("Location: index.php");
+    if(USER::getUserRole() == USER::ROLE_CUSTOMER){
+      header("Location: index.php?page=" . PAGE_ACCOUNT);
       exit;
     }
 
@@ -267,6 +271,7 @@ switch ($_GET['page']) {
 
         if(isset($user["customer_id"], $user["customer_fullName"])){
           $_SESSION["is_logged_in"] = true;
+          $_SESSION["role"] = USER::ROLE_CUSTOMER;
           $_SESSION["user"] = [];
           $_SESSION["user"]["customer_fullName"] = $user["customer_fullName"];
           $_SESSION["user"]["customer_id"]       = $user["customer_id"];
@@ -385,7 +390,13 @@ switch ($_GET['page']) {
 
     break;
 
-  case 'cart':
+  case PAGE_CART:
+
+    if(!User::hasPermission(User::PERMISSION_VIEW_CART)){
+      $page = new PageNotFound();
+      $page->displayPage();
+      exit;
+    }
 
     $page = new PageCart();
 
@@ -420,10 +431,11 @@ switch ($_GET['page']) {
     break;
 
 
-  case 'wishlist':
+  case PAGE_WISHLIST:
 
-    if(!$is_logged_in){
-      header("Location: index.php");
+    if(!User::hasPermission(User::PERMISSION_VIEW_WISHLIST)){
+      $page = new PageNotFound();
+      $page->displayPage();
       exit;
     }
 
@@ -450,7 +462,7 @@ switch ($_GET['page']) {
     break;
 
   // Order confirmation page
-  case 'order-confirmation':
+  case PAGE_ORDER_CONFIRMATION:
 
     if(! $is_logged_in || empty($_SESSION['order_placed']) || (int) $_SESSION['order_placed'] == 0){
         header("Location: index.php?page=cart");
@@ -484,10 +496,11 @@ switch ($_GET['page']) {
     break;
 
   // Order history page
-  case 'order-history':
+  case PAGE_ORDER_HISTORY:
 
-    if(! $is_logged_in ){
-      header("Location: index.php?page=login");
+    if(!User::hasPermission(User::PERMISSION_VIEW_ORDER_HISTORY)){
+      $page = new PageNotFound();
+      $page->displayPage();
       exit;
     }
 
@@ -527,13 +540,10 @@ switch ($_GET['page']) {
 
 
   // Logout Action
-  case 'logout':
-
-    unset($_SESSION["is_logged_in"]);
-    unset($_SESSION["user"]);
+  case PAGE_LOGOUT:
+    USER::clearSession();
     header("Location: index.php");
     exit;
-
     break;
 
   // Homepage
@@ -646,8 +656,5 @@ function mergeCartFromSession($pdo){
   return true;
 
 }
-
-
-
 
 ?>

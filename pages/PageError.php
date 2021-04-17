@@ -4,7 +4,7 @@ require_once 'Page.php';
 /**
  * Class PageError
  *
- * About Us page
+ * Error page
  */
 class PageError extends Page
 {
