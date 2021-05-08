@@ -107,14 +107,14 @@ class Artist extends Model
         }
 
         if( isset(
-                $arr["artist_id"],
-                $arr["artist_fullName"],
-                $arr["artist_lastName"],
-                $arr["artist_born"],
-                $arr["artist_died"],
-                $arr["artist_origin"],
-                $arr["artist_influence"],
-                $arr["artist_desc"]
+            $arr["artist_id"],
+            $arr["artist_fullName"],
+            $arr["artist_lastName"],
+            $arr["artist_born"],
+            $arr["artist_died"],
+            $arr["artist_origin"],
+            $arr["artist_influence"],
+            $arr["artist_desc"]
         )) {
             $this->setId(         $arr["artist_id"]);
             $this->setFullName(   $arr["artist_fullName"]);
@@ -332,16 +332,16 @@ class Artist extends Model
      *
      * @return array
      */
-    private function getArrayOfAttributes(){
+    public function getArrayOfAttributes(){
         $array = [];
-        $array["artist_id"]        = $this->artist_id;
-        $array["artist_fullName"]  = $this->artist_fullName;
-        $array["artist_lastName"]  = $this->artist_lastName;
-        $array["artist_born"]      = $this->artist_born;
-        $array["artist_died"]      = $this->artist_died;
-        $array["artist_origin"]    = $this->artist_origin;
-        $array["artist_influence"] = $this->artist_influence;
-        $array["artist_desc"]      = $this->artist_desc;
+        $array["artist_id"]        = $this->getId();
+        $array["artist_fullName"]  = $this->getFullName();
+        $array["artist_lastName"]  = $this->getLastName();
+        $array["artist_born"]      = $this->getBorn();
+        $array["artist_died"]      = $this->getDied();
+        $array["artist_origin"]    = $this->getOrigin();
+        $array["artist_influence"] = $this->getInfluence();
+        $array["artist_desc"]      = $this->getDescription();
         return $array;
     }
 
@@ -352,14 +352,14 @@ class Artist extends Model
      */
     private function getArrayOfAttributesForSTMT(){
         $array = [];
-        $array["artist_id"]        = $this->getId();
-        $array["artist_fullName"]  = $this->getFullName();
-        $array["artist_lastName"]  = $this->getLastName();
-        $array["artist_born"]      = $this->getBorn();
-        $array["artist_died"]      = $this->getDied();
-        $array["artist_origin"]    = $this->getOrigin();
-        $array["artist_influence"] = $this->getInfluence();
-        $array["artist_desc"]      = $this->getDescription();
+        $array[":artist_id"]        = $this->getId();
+        $array[":artist_fullName"]  = $this->getFullName();
+        $array[":artist_lastName"]  = $this->getLastName();
+        $array[":artist_born"]      = $this->getBorn();
+        $array[":artist_died"]      = $this->getDied();
+        $array[":artist_origin"]    = $this->getOrigin();
+        $array[":artist_influence"] = $this->getInfluence();
+        $array[":artist_desc"]      = $this->getDescription();
         return $array;
     }
 
