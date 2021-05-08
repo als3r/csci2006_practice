@@ -196,7 +196,9 @@ class Artwork extends Model
      */
     public function loadArtist(){
         if($this->getArtworkArtist() !== null){
-            $this->artist = new Artist($this->getArtworkArtist(), $this->getPdoDb());
+            $artist = new Artist($this->getArtworkArtist(), $this->getPdoDb());
+            $artist->loadData();
+            $this->artist = $artist;
         }
     }
 
@@ -433,7 +435,7 @@ class Artwork extends Model
      *
      * @return array
      */
-    private function getArrayOfAttributes(){
+    public function getArrayOfAttributes(){
         $array = [];
         $array["artwork_id"]           = $this->getArtworkId();
         $array["artwork_artist"]       = $this->getArtworkArtist();
