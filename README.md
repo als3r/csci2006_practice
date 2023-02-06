@@ -1,4 +1,4 @@
-# csci2006_Alexandr-Sergeyev
+# csci2006
 #
 # Artwork Store
 #
